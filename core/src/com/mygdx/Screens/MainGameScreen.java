@@ -148,6 +148,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         stage.addActor(arrow_ru_btn);
         stage.addActor(arrow_lu_btn);
         stage.addActor(arrow_rd_btn);
+        stage.addActor(arrow_ld_btn);
 
         Gdx.input.setInputProcessor(stage);
         stage.addActor(actorHero);
@@ -157,11 +158,13 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         arrow_u_btn.addListener(new ClickListener(){
            @Override
            public void clicked(InputEvent e, float x, float y){
-
+                actorHero.setSpriteHero(new Sprite(textureHero));
+                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.STEP);
+                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.STEP);
            }
         });
 
-        
+
 
     }
 
