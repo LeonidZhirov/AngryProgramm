@@ -5,9 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 
 
 public class ActorHero extends Actor {
@@ -16,7 +14,7 @@ public class ActorHero extends Actor {
     private boolean alive;
     private Sprite spriteHero;
     //MoveByAction move = new MoveByAction();
-    final float STEP = 10f;
+    public final float STEP = 10f;
 
     public boolean isAlive() {
         return alive;
@@ -24,6 +22,14 @@ public class ActorHero extends Actor {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
+    }
+
+    public void setTextureHero(Texture textureHero) {
+        this.textureHero = textureHero;
+    }
+
+    public void setSpriteHero(Sprite spriteHero) {
+        this.spriteHero = spriteHero;
     }
 
     public ActorHero(Texture textureHero){
@@ -62,6 +68,8 @@ public class ActorHero extends Actor {
             spriteHero.setPosition(getX(), getY() + STEP);
             this.setPosition(getX(), getY() + STEP);
         }
+
+
     }
 
     public void draw (Batch batch, float parentAlpha){
