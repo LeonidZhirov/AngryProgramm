@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -31,6 +32,14 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
         textureHero = new Texture("CharacterTilesSet-Right.png");
         spriteHero = new Sprite(textureHero);
+        isUp=false;
+        isDown=false;
+        isRight = false;
+        isLeft = false;
+        isRightUp = false;
+        isRightDown = false;
+        isLeftUp = false;
+        isLeftDown = false;
 //        spriteHero.setPosition(w/2 - spriteHero.getWidth()/2, h/2 - spriteHero.getHeight()/2);
 
     }
@@ -82,13 +91,21 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     private TextureRegionDrawable arrow_ld_TexRegionDrawable;
     private ImageButton arrow_ld_btn;
 
-
+    private Boolean isUp ;
+    private Boolean isDown;
+    private Boolean isRight;
+    private Boolean isLeft;
+    private Boolean isLeftUp;
+    private Boolean isLeftDown;
+    private Boolean isRightUp;
+    private Boolean isRightDown;
 
     @Override
     public void show() {
         stage = new Stage();
         actorHero = new ActorHero(textureHero);
         actorHero.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        actorHero.setSpriteHeroPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 //        move = new MoveToAction();
 //        move.setActor(actorHero);
 
@@ -155,16 +172,103 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 //        actorHero.rotateBy(180);
 //        actorHero.act(100);
 
-        arrow_u_btn.addListener(new ClickListener(){
-           @Override
-           public void clicked(InputEvent e, float x, float y){
-                actorHero.setSpriteHero(new Sprite(textureHero));
-                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.STEP);
-                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.STEP);
-           }
+        arrow_u_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+            {
+                isUp=true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isUp=false;
+            }
         });
+        arrow_d_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isDown=true;
+                return true;
+            }
 
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isDown=false;
+            }
+        });
+        arrow_r_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isRight=true;
+                return true;
+            }
 
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isRight=false;
+            }
+        });
+        arrow_l_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isLeft=true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isLeft=false;
+            }
+        });
+        arrow_lu_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isLeftUp=true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isLeftUp=false;
+            }
+        });
+        arrow_ru_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isRightUp=true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isRightUp=false;
+            }
+        });
+        arrow_ld_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isLeftDown=true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isLeftDown=false;
+            }
+        });
+        arrow_rd_btn.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isRightDown=true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isRightDown=false;
+            }
+        });
 
     }
 
@@ -178,7 +282,60 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        if(isUp)
+        {
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.STEP);
+            actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.STEP);
+        }
+        if(isDown)
+        {
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.STEP);
+            actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.STEP);
+        }
+        if(isRight)
+        {
+            actorHero.setTextureHero(new Texture("CharacterTilesSet-Right.png"));
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX() + actorHero.STEP + 5, actorHero.getY());
+            actorHero.setPosition(actorHero.getX() + actorHero.STEP + 5, actorHero.getY());
+        }
+        if(isLeft)
+        {
+            actorHero.setTextureHero(new Texture("CharacterTilesSet-Left.png"));
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX() - actorHero.STEP - 5, actorHero.getY());
+            actorHero.setPosition(actorHero.getX() - actorHero.STEP - 5, actorHero.getY());
+        }
+        if(isRightDown)
+        {
+            actorHero.setTextureHero(new Texture("CharacterTilesSet-Right.png"));
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX() + actorHero.STEP - 5, actorHero.getY() - actorHero.STEP);
+            actorHero.setPosition(actorHero.getX() + actorHero.STEP - 5, actorHero.getY() - actorHero.STEP);
+        }
+        if(isLeftDown)
+        {
+            actorHero.setTextureHero(new Texture("CharacterTilesSet-Left.png"));
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX() - actorHero.STEP + 5, actorHero.getY() - actorHero.STEP);
+            actorHero.setPosition(actorHero.getX() - actorHero.STEP + 5, actorHero.getY() - actorHero.STEP);
+        }
+        if(isRightUp)
+        {
+            actorHero.setTextureHero(new Texture("CharacterTilesSet-Right.png"));
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX() + actorHero.STEP - 5, actorHero.getY() + actorHero.STEP);
+            actorHero.setPosition(actorHero.getX() + actorHero.STEP - 5, actorHero.getY() + actorHero.STEP);
+        }
+        if(isLeftUp)
+        {
+            actorHero.setTextureHero(new Texture("CharacterTilesSet-Left.png"));
+            actorHero.setSpriteHero(new Sprite(textureHero));
+            spriteHero.setPosition(actorHero.getX() - actorHero.STEP + 5, actorHero.getY() + actorHero.STEP);
+            actorHero.setPosition(actorHero.getX() - actorHero.STEP + 5, actorHero.getY() + actorHero.STEP);
+        }
         stage.act(delta);
         stage.draw();
     }

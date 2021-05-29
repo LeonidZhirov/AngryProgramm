@@ -17,7 +17,7 @@ public class ActorHero extends Actor {
     public final float STEP = 10f;
 
     public boolean isAlive() {
-        return alive;
+        return true;
     }
 
     public void setAlive(boolean alive) {
@@ -31,6 +31,8 @@ public class ActorHero extends Actor {
     public void setSpriteHero(Sprite spriteHero) {
         this.spriteHero = spriteHero;
     }
+
+    public void setSpriteHeroPosition(float x, float y){ this.spriteHero.setPosition(x, y); }
 
     public ActorHero(Texture textureHero){
         this.textureHero=textureHero;
