@@ -7,14 +7,23 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import sun.util.calendar.JulianCalendar;
+
 
 public class ActorHero extends Actor {
 
     private Texture textureHero;
     private boolean alive;
+    private boolean isGrounded = true;
     private Sprite spriteHero;
     //MoveByAction move = new MoveByAction();
-    public final float STEP = 10f;
+    private final float STEP = 10f;
+
+    private final float JUMP_STEP_1 = 8f;
+    private final float JUMP_STEP_2 = 6f;
+    private final float JUMP_STEP_3 = 3f;
+    private final float JUMP_STEP_4 = 1f;
+
 
     public boolean isAlive() {
         return true;
@@ -22,6 +31,34 @@ public class ActorHero extends Actor {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
+    }
+
+    public boolean isGrounded() {
+        return isGrounded;
+    }
+
+    public void setGrounded(boolean grounded) {
+        isGrounded = grounded;
+    }
+
+    public float getSTEP() {
+        return STEP;
+    }
+
+    public float getJUMP_STEP_1() {
+        return JUMP_STEP_1;
+    }
+
+    public float getJUMP_STEP_2() {
+        return JUMP_STEP_2;
+    }
+
+    public float getJUMP_STEP_3() {
+        return JUMP_STEP_3;
+    }
+
+    public float getJUMP_STEP_4() {
+        return JUMP_STEP_4;
     }
 
     public void setTextureHero(Texture textureHero) {
@@ -40,6 +77,7 @@ public class ActorHero extends Actor {
         spriteHero = new Sprite(textureHero);
         setSize(spriteHero.getRegionWidth(), spriteHero.getRegionHeight());
     }
+
 
     public void act (float delta)
     {
@@ -70,7 +108,6 @@ public class ActorHero extends Actor {
             spriteHero.setPosition(getX(), getY() + STEP);
             this.setPosition(getX(), getY() + STEP);
         }
-
 
     }
 
