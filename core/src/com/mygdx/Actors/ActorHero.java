@@ -11,6 +11,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
+
+import sun.font.TextLabel;
+
 
 public class ActorHero extends Actor {
 
@@ -29,7 +35,6 @@ public class ActorHero extends Actor {
     private static final int FRAME_ROWS = 1; // #2
     private int yCount = 0;
 
-    private Animation jumpAnimation;
 
     private Animation walkAnimation; // #3
     private Animation attackAnimation;
@@ -44,6 +49,7 @@ public class ActorHero extends Actor {
     private boolean isHeroLookLeft = false;
     private boolean firstPressed = true;
     private boolean needJump = false;
+    private boolean isAttacking = false;
 
     private boolean jumpUp = true;
     private boolean jumpDown = false;
@@ -195,19 +201,19 @@ public class ActorHero extends Actor {
             }
         }
 
-        attackAnimation = new Animation(0.005f, attackFrames); // #11
+        attackAnimation = new Animation(0.015f, attackFrames); // #11
         spriteBatch = new SpriteBatch(); // #12
         stateTime = 0f; // #13
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // #14
-        stateTime += Gdx.graphics.getDeltaTime() * 4; // #15
-        currentFrame = (TextureRegion) attackAnimation.getKeyFrame(stateTime, true); // #16
+        stateTime += Gdx.graphics.getDeltaTime() * 10; // #15
+        currentFrame = (TextureRegion) attackAnimation.getKeyFrame(stateTime, false); // #16
 
         textureRegionHero = new TextureRegion(currentFrame);
         spriteHero = new Sprite(textureRegionHero);
 
-        spriteBatch.begin();
-        spriteBatch.end();
+//        spriteBatch.begin();
+//        spriteBatch.end();
     }
 
     public boolean isAlive() {
@@ -226,10 +232,24 @@ public class ActorHero extends Actor {
         setSize(spriteHero.getRegionWidth(), spriteHero.getRegionHeight());
     }
 
+    private float timeSeconds = 0f;
 
     public void act (float delta)
     {
         super.act(delta);
+        timeSeconds += Gdx.graphics.getDeltaTime();
+
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
+            isHeroAttack(textureHeroAttack);
+            if(timeSeconds < 5){
+
+            }else {
+                timeSeconds = 0f;
+            }
+        }
+
 
         if(needJump)
         {
@@ -309,7 +329,7 @@ public class ActorHero extends Actor {
             }
         }
 
-        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN) && !needJump && !isMainGameScreenStop()) {
+        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN) && !needJump && !isMainGameScreenStop() && !Gdx.input.isKeyPressed(Input.Keys.R)) {
             if(isHeroLookLeft) {
                 textureHero = new Texture("characters/standingLeft.png");
                 textureRegionHero = new TextureRegion(textureHero);
@@ -425,11 +445,6 @@ public class ActorHero extends Actor {
 
         float W = Gdx.graphics.getWidth();
         float H = Gdx.graphics.getHeight();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.R)) {
-            textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
-            isHeroAttack(textureHeroAttack);
-        }
 
         if(this.getY() <= -10){
             this.setPosition(this.getX(), -10);
