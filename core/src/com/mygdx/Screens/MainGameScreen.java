@@ -21,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.Actors.ActorEnemy;
 import com.mygdx.Actors.ActorHero;
 
+import javax.xml.soap.Text;
+
 
 public class MainGameScreen extends BaseScreen implements ApplicationListener
 {
@@ -260,35 +262,42 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
         if(isUp)
         {
-            if (actorHero.isFirstPressed()) {
-                Texture walkSheet = new Texture("characters/runningRight.png"); // #9
-                actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setFirstPressed(false);
-                actorHero.setHeroLookLeft(false);
-                actorHero.setHeroLookRight(true);
-            }
-            else {
-                actorHero.isHeroRun();
-
+            if(!actorHero.isNeedJump()) {
+                if (actorHero.isFirstPressed()) {
+                    Texture walkSheet = new Texture("characters/runningRight.png"); // #9
+                    actorHero.isHeroRun(walkSheet);
+                    spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
+                    actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
+                    actorHero.setFirstPressed(false);
+                    actorHero.setHeroLookLeft(false);
+                    actorHero.setHeroLookRight(true);
+                } else {
+                    actorHero.isHeroRun();
+                    spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
+                    actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
+                }
+            }else{
                 spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
                 actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.HERO_STEP);
             }
         }
         if(isDown)
         {
-            if (actorHero.isFirstPressed()) {
-                Texture walkSheet = new Texture("characters/runningRight.png"); // #9
-                actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setFirstPressed(false);
-                actorHero.setHeroLookLeft(false);
-                actorHero.setHeroLookRight(true);
-            }
-            else {
-                actorHero.isHeroRun();
+            if(!actorHero.isNeedJump()) {
+                if (actorHero.isFirstPressed()) {
+                    Texture walkSheet = new Texture("characters/runningRight.png"); // #9
+                    actorHero.isHeroRun(walkSheet);
+                    spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
+                    actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
+                    actorHero.setFirstPressed(false);
+                    actorHero.setHeroLookLeft(false);
+                    actorHero.setHeroLookRight(true);
+                } else {
+                    actorHero.isHeroRun();
+                    spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
+                    actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
+                }
+            }else{
                 spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
                 actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
             }
@@ -311,8 +320,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
                 actorHero.setHeroLookLeft(false);
                 textureHero = new Texture("characters/jumpingRight.png");
                 TextureRegion textureRegionHero = new TextureRegion(textureHero);
-                spriteHero = new Sprite(textureRegionHero);
-                actorHero.setSpriteHero(spriteHero);
+                actorHero.setTextureRegionHero(textureRegionHero);
             }
         }
         if(isLeft)
@@ -334,89 +342,96 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
                 actorHero.setHeroLookLeft(true);
                 textureHero = new Texture("characters/jumpingLeft.png");
                 TextureRegion textureRegionHero = new TextureRegion(textureHero);
-                spriteHero = new Sprite(textureRegionHero);
+                actorHero.setTextureRegionHero(textureRegionHero);
             }
         }
         if(isRightDown)
         {
-            if (actorHero.isFirstPressed())
-            {
+            if(!actorHero.isNeedJump()) {
                 Texture walkSheet = new Texture("characters/runningRight.png"); // #9
+
                 actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setFirstPressed(false);
-                actorHero.setHeroLookLeft(false);
+
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY() - actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY() - actorHero.HERO_STEP);
+
                 actorHero.setHeroLookRight(true);
-            }
-            else
-            {
-                Texture walkSheet = new Texture("characters/runningRight.png"); // #9
-                actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
+                actorHero.setHeroLookLeft(false);
+            }else{
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY() - actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY() - actorHero.HERO_STEP);
+                actorHero.setHeroLookRight(true);
+                actorHero.setHeroLookLeft(false);
+                textureHero = new Texture("characters/jumpingRight.png");
+                TextureRegion textureRegionHero = new TextureRegion(textureHero);
+                actorHero.setTextureRegionHero(textureRegionHero);
             }
         }
         if(isLeftDown)
         {
-            if (actorHero.isFirstPressed())
-            {
+            if(!actorHero.isNeedJump()) {
                 Texture walkSheet = new Texture("characters/runningLeft.png"); // #9
+
                 actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setFirstPressed(false);
-                actorHero.setHeroLookLeft(false);
-                actorHero.setHeroLookRight(true);
-            }
-            else
-            {
-                Texture walkSheet = new Texture("characters/runningLeft.png"); // #9
-                actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() - actorHero.HERO_STEP);
+
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY() - actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY() - actorHero.HERO_STEP);
+
+                actorHero.setHeroLookRight(false);
+                actorHero.setHeroLookLeft(true);
+            }else{
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY() - actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY() - actorHero.HERO_STEP);
+                actorHero.setHeroLookRight(false);
+                actorHero.setHeroLookLeft(true);
+                textureHero = new Texture("characters/jumpingLeft.png");
+                TextureRegion textureRegionHero = new TextureRegion(textureHero);
+                actorHero.setTextureRegionHero(textureRegionHero);
             }
         }
         if(isRightUp)
         {
-            if (actorHero.isFirstPressed()) {
+            if(!actorHero.isNeedJump()) {
                 Texture walkSheet = new Texture("characters/runningRight.png"); // #9
+
                 actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setFirstPressed(false);
-                actorHero.setHeroLookLeft(false);
+
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY() + actorHero.HERO_STEP);
+
                 actorHero.setHeroLookRight(true);
-            }
-            else {
-                Texture walkSheet = new Texture("characters/runningRight.png"); // #9
-                actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
+                actorHero.setHeroLookLeft(false);
+            }else{
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY() + actorHero.HERO_STEP);
+                actorHero.setHeroLookRight(true);
+                actorHero.setHeroLookLeft(false);
+                textureHero = new Texture("characters/jumpingRight.png");
+                TextureRegion textureRegionHero = new TextureRegion(textureHero);
+                actorHero.setTextureRegionHero(textureRegionHero);
             }
         }
         if(isLeftUp)
         {
-            if (actorHero.isFirstPressed()) {
+            if(!actorHero.isNeedJump()) {
                 Texture walkSheet = new Texture("characters/runningLeft.png"); // #9
-                actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setFirstPressed(false);
-                actorHero.setHeroLookLeft(false);
-                actorHero.setHeroLookRight(true);
-            }
-            else {
-                Texture walkSheet = new Texture("characters/runningLeft.png"); // #9
-                actorHero.isHeroRun(walkSheet);
-                spriteHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY() + actorHero.HERO_STEP);
-            }
-        }
 
-        if (!(isRight||isLeft||isUp||isDown||isRightDown||isRightUp||isLeftDown||isLeftUp)) {
-            actorHero.setTextureHero(new Texture("characters/defaultRight.png"));
-            actorHero.setSpriteHero(new Sprite(textureHero));
+                actorHero.isHeroRun(walkSheet);
+
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY() + actorHero.HERO_STEP);
+
+                actorHero.setHeroLookRight(false);
+                actorHero.setHeroLookLeft(true);
+            }else{
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY() + actorHero.HERO_STEP);
+                actorHero.setHeroLookRight(false);
+                actorHero.setHeroLookLeft(true);
+                textureHero = new Texture("characters/jumpingLeft.png");
+                TextureRegion textureRegionHero = new TextureRegion(textureHero);
+                actorHero.setTextureRegionHero(textureRegionHero);
+            }
         }
 
         stage.act(delta);
