@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygdx.Actors.ActorEnemy;
 import com.mygdx.Actors.ActorHero;
 
 
@@ -59,6 +60,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     private Texture textureHero;
     private Sprite spriteHero;
     private MoveToAction move;
+    private ActorEnemy actorEnemy;
 
 
     private Boolean isUp;
@@ -77,6 +79,9 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         actorHero.setPosition(W / 2, H / 2);
         actorHero.setSpriteHeroPosition(W / 2, H / 2);
 
+//        actorEnemy = new ActorEnemy(actorHero);
+//        actorEnemy.setPosition(100,100);
+//        stage.addActor(actorEnemy);
 
 //        move = new MoveToAction();
 //        move.setActor(actorHero);
@@ -118,100 +123,123 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
            }
         });
 
+        attack_btn.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent e, float x, float y){
+
+            }
+        });
+
         arrow_u_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
             {
+                actorHero.setMainGameScreenStop(true);
                 isUp=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isUp=false;
             }
         });
         arrow_d_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(true);
                 isDown=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isDown=false;
             }
         });
         arrow_r_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(true);
                 isRight=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isRight=false;
             }
         });
         arrow_l_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(true);
                 isLeft=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isLeft=false;
             }
         });
         arrow_lu_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(true);
                 isLeftUp=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isLeftUp=false;
             }
         });
         arrow_ru_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(true);
                 isRightUp=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isRightUp=false;
             }
         });
         arrow_ld_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(true);
                 isLeftDown=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isLeftDown=false;
             }
         });
         arrow_rd_btn.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(true);
                 isRightDown=true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                actorHero.setMainGameScreenStop(false);
                 isRightDown=false;
             }
         });
@@ -228,76 +256,6 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        if(needJump) {
-//            actorHero.isHeroJump();
-//        }
-//
-//            if(yCount == 0 && jumpUp){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_1());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_1());
-//                yCount++;
-//            }
-//
-//
-//            if(yCount > 0 && yCount < 25 && jumpUp){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_1());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_1());
-//                yCount++;
-//            }
-//            if(yCount >= 25  && yCount < 40 && jumpUp){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_2());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_2());
-//                yCount++;
-//            }
-//            if(yCount >= 40  && yCount < 53 && jumpUp){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_3());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_3());
-//                yCount++;
-//            }
-//            if(yCount >= 53  && yCount < 60 && jumpUp){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_4());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() + actorHero.getJUMP_STEP_4());
-//                yCount++;
-//            }
-//
-//
-//            if(yCount == 60 && jumpUp){
-//                jumpUp = false;
-//                jumpDown = true;
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_4());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_4());
-//                yCount--;
-//            }
-//
-//
-//
-//            if(yCount >= 53  && yCount < 61 && jumpDown){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_4());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_4());
-//                yCount--;
-//            }
-//            if(yCount >= 40  && yCount < 53 && jumpDown){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_3());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_3());
-//                yCount--;
-//            }
-//            if(yCount >= 25  && yCount < 40 && jumpDown){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_2());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_2());
-//                yCount--;
-//            }
-//            if(yCount > 0 && yCount < 25 && jumpDown){
-//                spriteHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_1());
-//                actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.getJUMP_STEP_1());
-//                yCount--;
-//            }
-//
-//
-//            if(yCount == 0 && jumpDown){
-//                needJump = false;
-//                jumpUp = true;
-//                jumpDown = false;
-//            }
 
 
         if(isUp)
@@ -335,28 +293,49 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
                 actorHero.setPosition(actorHero.getX(), actorHero.getY() - actorHero.HERO_STEP);
             }
         }
-        if(isRight)
-        {
-            Texture walkSheet = new Texture("characters/runningRight.png"); // #9
-            actorHero.isHeroRun(walkSheet);
-            actorHero.setSpriteHeroPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY());
-            actorHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY());
-            actorHero.setHeroLookRight(true);
-            actorHero.setHeroLookLeft(false);
-        }else if (isRight){
-            actorHero.setSpriteHeroPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY());
-            actorHero.setPosition(actorHero.getX() + actorHero.getSTEP(), actorHero.getY());
-            actorHero.setHeroLookRight(true);
-            actorHero.setHeroLookLeft(false);
+        if(isRight) {
+            if(!actorHero.isNeedJump()) {
+                Texture walkSheet = new Texture("characters/runningRight.png"); // #9
+
+                actorHero.isHeroRun(walkSheet);
+
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 5, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 5, actorHero.getY());
+
+                actorHero.setHeroLookRight(true);
+                actorHero.setHeroLookLeft(false);
+            }else{
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 5, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 5, actorHero.getY());
+                actorHero.setHeroLookRight(true);
+                actorHero.setHeroLookLeft(false);
+                textureHero = new Texture("characters/jumpingRight.png");
+                TextureRegion textureRegionHero = new TextureRegion(textureHero);
+                spriteHero = new Sprite(textureRegionHero);
+                actorHero.setSpriteHero(spriteHero);
+            }
         }
         if(isLeft)
         {
-            Texture walkSheet = new Texture("characters/runningLeft.png"); // #9
-            actorHero.isHeroRun(walkSheet);
-            spriteHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY());
-            actorHero.setPosition(actorHero.getX() - actorHero.getSTEP(), actorHero.getY());
-            actorHero.setHeroLookRight(false);
-            actorHero.setHeroLookLeft(true);
+            if(!actorHero.isNeedJump()) {
+                Texture walkSheet = new Texture("characters/runningLeft.png"); // #9
+
+                actorHero.isHeroRun(walkSheet);
+
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 5, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 5, actorHero.getY());
+
+                actorHero.setHeroLookRight(false);
+                actorHero.setHeroLookLeft(true);
+            }else{
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 5, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 5, actorHero.getY());
+                actorHero.setHeroLookRight(false);
+                actorHero.setHeroLookLeft(true);
+                textureHero = new Texture("characters/jumpingLeft.png");
+                TextureRegion textureRegionHero = new TextureRegion(textureHero);
+                spriteHero = new Sprite(textureRegionHero);
+            }
         }
         if(isRightDown)
         {
