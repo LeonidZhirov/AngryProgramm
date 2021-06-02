@@ -350,7 +350,7 @@ public class ActorHero extends Actor {
         delaySeconds += Gdx.graphics.getDeltaTime();
         delay02Seconds += Gdx.graphics.getDeltaTime();
 
-        if(delay02Seconds > 0.15f){
+        if(delay02Seconds > 0.2f){
             needDelay02 = false;
         }
 
@@ -367,12 +367,14 @@ public class ActorHero extends Actor {
                 comboCount = 2;
                 needDelay05 = true;
                 delaySeconds = 0f;
+                delay02Seconds = 0f;
+                needDelay02 = true;
             }else{
-                if(timeSeconds < 5 && comboCount == 2) {
+                if(timeSeconds < 0.7 && comboCount == 2) {
                     comboCount = 3;
                     needAttack2 = true;
                 }
-                else if(timeSeconds < 5 && comboCount == 3) {
+                else if(timeSeconds < 0.7 && comboCount == 3) {
                     comboCount = 1;
                     needAttack3 = true;
                     needDelay05 = true;
@@ -392,8 +394,6 @@ public class ActorHero extends Actor {
                 }
                 timeSeconds = 0f;
             }
-
-
         }
 
         if(needAttack2) {
@@ -545,14 +545,14 @@ public class ActorHero extends Actor {
 
                 isHeroRun(walkSheet);
 
-                spriteHero.setPosition(getX() - HERO_STEP - 5, getY());
-                this.setPosition(getX() - HERO_STEP - 5, getY());
+                spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
+                this.setPosition(getX() - HERO_STEP - 3, getY());
 
                 this.isHeroLookRight = false;
                 this.isHeroLookLeft = true;
             } else {
-                spriteHero.setPosition(getX() - HERO_STEP - 5, getY());
-                this.setPosition(getX() - HERO_STEP - 5, getY());
+                spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
+                this.setPosition(getX() - HERO_STEP - 3, getY());
                 this.isHeroLookRight = false;
                 this.isHeroLookLeft = true;
                 textureHero = new Texture("characters/jumpingLeft.png");
@@ -569,14 +569,14 @@ public class ActorHero extends Actor {
 
                 isHeroRun(walkSheet);
 
-                spriteHero.setPosition(getX() + HERO_STEP + 5, getY());
-                this.setPosition(getX() + HERO_STEP + 5, getY());
+                spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
+                this.setPosition(getX() + HERO_STEP + 3, getY());
 
                 this.isHeroLookRight = true;
                 this.isHeroLookLeft = false;
             } else {
-                spriteHero.setPosition(getX() + HERO_STEP + 5, getY());
-                this.setPosition(getX() + HERO_STEP + 5, getY());
+                spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
+                this.setPosition(getX() + HERO_STEP + 3, getY());
 
                 this.isHeroLookRight = true;
                 this.isHeroLookLeft = false;

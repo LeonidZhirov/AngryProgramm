@@ -142,6 +142,8 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
                     actorHero.setComboCount(2);
                     actorHero.setNeedDelay05(true);
                     actorHero.setDelaySeconds(0f);
+                    actorHero.setDelay02Seconds(0f);
+                    actorHero.setNeedDelay02(true);
                 }else{
                     if(actorHero.getTimeSeconds() < 5 && actorHero.getComboCount() == 2) {
                         actorHero.setComboCount(3);
@@ -346,14 +348,14 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
                 actorHero.isHeroRun(walkSheet);
 
-                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 5, spriteHero.getY());
-                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 5, actorHero.getY());
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY());
 
                 actorHero.setHeroLookRight(true);
                 actorHero.setHeroLookLeft(false);
             }else{
-                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 5, spriteHero.getY());
-                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 5, actorHero.getY());
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY());
                 actorHero.setHeroLookRight(true);
                 actorHero.setHeroLookLeft(false);
                 textureHero = new Texture("characters/jumpingRight.png");
@@ -368,14 +370,14 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
                 actorHero.isHeroRun(walkSheet);
 
-                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 5, spriteHero.getY());
-                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 5, actorHero.getY());
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY());
 
                 actorHero.setHeroLookRight(false);
                 actorHero.setHeroLookLeft(true);
             }else{
-                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 5, spriteHero.getY());
-                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 5, actorHero.getY());
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY());
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY());
                 actorHero.setHeroLookRight(false);
                 actorHero.setHeroLookLeft(true);
                 textureHero = new Texture("characters/jumpingLeft.png");
