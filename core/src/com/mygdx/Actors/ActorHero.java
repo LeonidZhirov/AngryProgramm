@@ -25,6 +25,7 @@ public class ActorHero extends Actor {
     private TextureRegion textureRegionHero;
     private float life = 100f;
 
+
     private Texture textureHeroAttack;
     private Sprite spriteHero;
 

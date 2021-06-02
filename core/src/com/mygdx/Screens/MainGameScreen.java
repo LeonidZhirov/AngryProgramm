@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.Actors.ActorEnemy;
 import com.mygdx.Actors.ActorHero;
+import com.mygdx.Actors.Shadow;
 
 import javax.xml.soap.Text;
 
@@ -61,9 +62,8 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     private ActorHero actorHero;
     private Texture textureHero;
     private Sprite spriteHero;
-    private MoveToAction move;
     private ActorEnemy actorEnemy;
-
+    private Shadow shadowHero;
 
     private Boolean isUp;
     private Boolean isDown;
@@ -83,6 +83,8 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         actorHero.setPosition(W / 2, H / 2);
         actorHero.setSpriteHeroPosition(W / 2, H / 2);
 
+        shadowHero = new Shadow(actorHero);
+        shadowHero.setPosition(W/2,H/2);
 //        actorEnemy = new ActorEnemy(actorHero);
 //        actorEnemy.setPosition(100,100);
 //        stage.addActor(actorEnemy);
@@ -117,6 +119,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
         Gdx.input.setInputProcessor(stage);
         stage.addActor(actorHero);
+        stage.addActor(shadowHero);
 //        actorHero.rotateBy(180);
 //        actorHero.act(100);
 
