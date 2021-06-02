@@ -25,16 +25,15 @@ public class ActorHero extends Actor {
     private TextureRegion textureRegionHero;
     private float life = 100f;
 
-    private boolean MainGameScreenStop = false;
     private Texture textureHeroAttack;
-    private boolean alive;
     private Sprite spriteHero;
 
     private final float STEP = 5f;
     private static final int FRAME_COLS = 3; // #1
     private static final int FRAME_ROWS = 1; // #2
-    private int yCount = 0;
-
+    private int yCountJump = 0;
+    private int xCountAttack2n3 = 0;
+    private int comboCount = 1;
 
     private Animation walkAnimation; // #3
     private Animation attackAnimation;
@@ -48,12 +47,17 @@ public class ActorHero extends Actor {
     private boolean isHeroLookRight = true;
     private boolean isHeroLookLeft = false;
     private boolean firstPressed = true;
+    private boolean firstPressedAttack = true;
     private boolean needJump = false;
-    private boolean isAttacking = false;
-
     private boolean jumpUp = true;
     private boolean jumpDown = false;
+    private boolean alive;
+    private boolean MainGameScreenStop = false;
+    private boolean needAttack2 = false;
+    private boolean needAttack3 = false;
 
+    private boolean needDelay05 = false;
+    private boolean needDelay02 = false;
 
     public final float HERO_STEP = 2f;
 
@@ -61,6 +65,7 @@ public class ActorHero extends Actor {
     private final float JUMP_STEP_2 = 2.5f;
     private final float JUMP_STEP_3 = 1.2f;
     private final float JUMP_STEP_4 = 0.7f;
+    private final float ATTACK2N3_STEP = 20f;
 
     public void setMainGameScreenStop(boolean mainGameScreenStop) {
         MainGameScreenStop = mainGameScreenStop;
@@ -68,6 +73,106 @@ public class ActorHero extends Actor {
 
     public boolean isMainGameScreenStop() {
         return MainGameScreenStop;
+    }
+
+    public void setTextureHeroAttack(Texture textureHeroAttack) {
+        this.textureHeroAttack = textureHeroAttack;
+    }
+
+    public Texture getTextureHeroAttack() {
+        return textureHeroAttack;
+    }
+
+    public void setFirstPressedAttack(boolean firstPressedAttack) {
+        this.firstPressedAttack = firstPressedAttack;
+    }
+
+    public boolean isHeroLookRight() {
+        return isHeroLookRight;
+    }
+
+    public boolean isHeroLookLeft() {
+        return isHeroLookLeft;
+    }
+
+    public boolean isFirstPressedAttack() {
+        return firstPressedAttack;
+    }
+
+    public int getxCountAttack2n3() {
+        return xCountAttack2n3;
+    }
+
+    public void setxCountAttack2n3(int xCountAttack2n3) {
+        this.xCountAttack2n3 = xCountAttack2n3;
+    }
+
+    public int getComboCount() {
+        return comboCount;
+    }
+
+    public void setComboCount(int comboCount) {
+        this.comboCount = comboCount;
+    }
+
+    public boolean isNeedAttack2() {
+        return needAttack2;
+    }
+
+    public void setNeedAttack2(boolean needAttack2) {
+        this.needAttack2 = needAttack2;
+    }
+
+    public boolean isNeedAttack3() {
+        return needAttack3;
+    }
+
+    public void setNeedAttack3(boolean needAttack3) {
+        this.needAttack3 = needAttack3;
+    }
+
+    public boolean isNeedDelay05() {
+        return needDelay05;
+    }
+
+    public void setNeedDelay05(boolean needDelay05) {
+        this.needDelay05 = needDelay05;
+    }
+
+    public boolean isNeedDelay02() {
+        return needDelay02;
+    }
+
+    public void setNeedDelay02(boolean needDelay02) {
+        this.needDelay02 = needDelay02;
+    }
+
+    public float getATTACK2N3_STEP() {
+        return ATTACK2N3_STEP;
+    }
+
+    public float getTimeSeconds() {
+        return timeSeconds;
+    }
+
+    public void setTimeSeconds(float timeSeconds) {
+        this.timeSeconds = timeSeconds;
+    }
+
+    public float getDelaySeconds() {
+        return delaySeconds;
+    }
+
+    public void setDelaySeconds(float delaySeconds) {
+        this.delaySeconds = delaySeconds;
+    }
+
+    public float getDelay02Seconds() {
+        return delay02Seconds;
+    }
+
+    public void setDelay02Seconds(float delay02Seconds) {
+        this.delay02Seconds = delay02Seconds;
     }
 
     public float getJUMP_STEP_1() {
@@ -98,6 +203,14 @@ public class ActorHero extends Actor {
         this.spriteHero = spriteHero;
     }
 
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
     public void setTextureRegionHero(TextureRegion textureRegionHero) {
         this.textureRegionHero = textureRegionHero;
     }
@@ -126,6 +239,15 @@ public class ActorHero extends Actor {
 
     public void isHeroJump(boolean needJump) {
         this.needJump = needJump;
+    }
+
+
+    public ActorHero(Texture textureHero) {
+        this.textureHero = textureHero;
+        textureRegionHero = new TextureRegion(this.textureHero);
+        this.alive=true;
+        spriteHero = new Sprite(textureRegionHero);
+        setSize(spriteHero.getRegionWidth(), spriteHero.getRegionHeight());
     }
 
 
@@ -201,150 +323,224 @@ public class ActorHero extends Actor {
             }
         }
 
-        attackAnimation = new Animation(0.015f, attackFrames); // #11
+        attackAnimation = new Animation(0.05f, attackFrames); // #11
         spriteBatch = new SpriteBatch(); // #12
         stateTime = 0f; // #13
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // #14
-        stateTime += Gdx.graphics.getDeltaTime() * 10; // #15
+        stateTime += Gdx.graphics.getDeltaTime() * 5; // #15
         currentFrame = (TextureRegion) attackAnimation.getKeyFrame(stateTime, false); // #16
 
         textureRegionHero = new TextureRegion(currentFrame);
         spriteHero = new Sprite(textureRegionHero);
-
-//        spriteBatch.begin();
-//        spriteBatch.end();
     }
 
-    public boolean isAlive() {
-        return alive;
-    }
 
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    public ActorHero(Texture textureHero) {
-        this.textureHero = textureHero;
-        textureRegionHero = new TextureRegion(this.textureHero);
-        this.alive=true;
-        spriteHero = new Sprite(textureRegionHero);
-        setSize(spriteHero.getRegionWidth(), spriteHero.getRegionHeight());
-    }
 
     private float timeSeconds = 0f;
+    private float delaySeconds = 0f;
+    private float delay02Seconds = 0f;
 
-    public void act (float delta)
+    public void act(float delta)
     {
         super.act(delta);
+
+
         timeSeconds += Gdx.graphics.getDeltaTime();
+        delaySeconds += Gdx.graphics.getDeltaTime();
+        delay02Seconds += Gdx.graphics.getDeltaTime();
 
+        if(delay02Seconds > 0.15f){
+            needDelay02 = false;
+        }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
-            isHeroAttack(textureHeroAttack);
-            if(timeSeconds < 5){
-
-            }else {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R) && !needAttack2 && !needAttack3 && !needJump) {
+            if(firstPressedAttack) {
+                if (isHeroLookRight) {
+                    textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
+                }else{
+                    textureHeroAttack = new Texture("characters/attackingLeft.png");
+                }
+                isHeroAttack(textureHeroAttack);
                 timeSeconds = 0f;
+                firstPressedAttack = false;
+                comboCount = 2;
+                needDelay05 = true;
+                delaySeconds = 0f;
+            }else{
+                if(timeSeconds < 5 && comboCount == 2) {
+                    comboCount = 3;
+                    needAttack2 = true;
+                }
+                else if(timeSeconds < 5 && comboCount == 3) {
+                    comboCount = 1;
+                    needAttack3 = true;
+                    needDelay05 = true;
+                    delaySeconds = 0f;
+                }
+                else if(!needDelay05 || needDelay05 && delaySeconds > 0.5){
+                    if (isHeroLookRight) {
+                        textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
+                    }else{
+                        textureHeroAttack = new Texture("characters/attackingLeft.png");
+                    }
+                    comboCount = 2;
+                    isHeroAttack(textureHeroAttack);
+                    needDelay05 = false;
+                    delay02Seconds = 0f;
+                    needDelay02 = true;
+                }
+                timeSeconds = 0f;
+            }
+
+
+        }
+
+        if(needAttack2) {
+            if (xCountAttack2n3 < 7) {
+                if (isHeroLookRight) {
+                    textureHero = new Texture("characters/strangeRight1.png");
+                    textureRegionHero = new TextureRegion(textureHero);
+                    spriteHero = new Sprite(textureRegionHero);
+                    spriteHero.setPosition(spriteHero.getX() + ATTACK2N3_STEP, spriteHero.getY());
+                    this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
+                } else {
+                    textureHero = new Texture("characters/strangeLeft1.png");
+                    textureRegionHero = new TextureRegion(textureHero);
+                    spriteHero = new Sprite(textureRegionHero);
+                    spriteHero.setPosition(spriteHero.getX() - ATTACK2N3_STEP, spriteHero.getY());
+                    this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                }
+                xCountAttack2n3++;
+            }
+            if (xCountAttack2n3 == 7) {
+                needAttack2 = false;
+                xCountAttack2n3 = 0;
+                delay02Seconds = 0f;
+                needDelay02 = true;
+            }
+        }
+        if(needAttack3) {
+            boolean isLooking = isHeroLookRight;
+            if (xCountAttack2n3 < 7) {
+                if (isHeroLookLeft) {
+                    textureHero = new Texture("characters/strangeRight1.png");
+                    textureRegionHero = new TextureRegion(textureHero);
+                    spriteHero = new Sprite(textureRegionHero);
+                    spriteHero.setPosition(spriteHero.getX() + ATTACK2N3_STEP, spriteHero.getY());
+                    this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
+
+                } else {
+                    textureHero = new Texture("characters/strangeLeft1.png");
+                    textureRegionHero = new TextureRegion(textureHero);
+                    spriteHero = new Sprite(textureRegionHero);
+                    spriteHero.setPosition(spriteHero.getX() - ATTACK2N3_STEP, spriteHero.getY());
+                    this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                }
+                xCountAttack2n3++;
+            }
+            if (xCountAttack2n3 == 7) {
+                needAttack3 = false;
+                xCountAttack2n3 = 0;
+                isHeroLookRight = isLooking;
+                isHeroLookLeft = !isLooking;
+                delay02Seconds = 0f;
+                needDelay02 = true;
             }
         }
 
 
+
+
         if(needJump)
         {
-            if (yCount == 0 && jumpUp) {
+            if (yCountJump == 0 && jumpUp) {
                 if(isHeroLookRight) {
                     textureHero = new Texture("characters/jumpingRight.png");
-                    textureRegionHero = new TextureRegion(textureHero);
-                    spriteHero = new Sprite(textureRegionHero);
                 }else{
                     textureHero = new Texture("characters/jumpingLeft.png");
-                    textureRegionHero = new TextureRegion(textureHero);
-                    spriteHero = new Sprite(textureRegionHero);
                 }
+                textureRegionHero = new TextureRegion(textureHero);
+                spriteHero = new Sprite(textureRegionHero);
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_1());
                 this.setPosition(this.getX(), this.getY() + getJUMP_STEP_1());
-                yCount++;
+                yCountJump++;
             }
 
 
-            if (yCount > 0 && yCount < 25 && jumpUp) {
+            if (yCountJump > 0 && yCountJump < 25 && jumpUp) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_1());
                 this.setPosition(this.getX(), this.getY() + getJUMP_STEP_1());
-                yCount++;
+                yCountJump++;
             }
-            if (yCount >= 25 && yCount < 40 && jumpUp) {
+            if (yCountJump >= 25 && yCountJump < 40 && jumpUp) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_2());
                 this.setPosition(this.getX(), this.getY() + getJUMP_STEP_2());
-                yCount++;
+                yCountJump++;
             }
-            if (yCount >= 40 && yCount < 53 && jumpUp) {
+            if (yCountJump >= 40 && yCountJump < 53 && jumpUp) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_3());
                 this.setPosition(this.getX(), this.getY() + getJUMP_STEP_3());
-                yCount++;
+                yCountJump++;
             }
-            if (yCount >= 53 && yCount < 60 && jumpUp) {
+            if (yCountJump >= 53 && yCountJump < 60 && jumpUp) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_4());
                 this.setPosition(this.getX(), this.getY() + getJUMP_STEP_4());
-                yCount++;
+                yCountJump++;
             }
 
 
-            if (yCount == 60 && jumpUp) {
+            if (yCountJump == 60 && jumpUp) {
                 jumpUp = false;
                 jumpDown = true;
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_4());
                 this.setPosition(this.getX(), this.getY() - getJUMP_STEP_4());
-                yCount--;
+                yCountJump--;
             }
 
 
-            if (yCount >= 53 && yCount < 61 && jumpDown) {
+            if (yCountJump >= 53 && yCountJump < 61 && jumpDown) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_4());
                 this.setPosition(this.getX(), this.getY() - getJUMP_STEP_4());
-                yCount--;
+                yCountJump--;
             }
-            if (yCount >= 40 && yCount < 53 && jumpDown) {
+            if (yCountJump >= 40 && yCountJump < 53 && jumpDown) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_3());
                 this.setPosition(this.getX(), this.getY() - getJUMP_STEP_3());
-                yCount--;
+                yCountJump--;
             }
-            if (yCount >= 25 && yCount < 40 && jumpDown) {
+            if (yCountJump >= 25 && yCountJump < 40 && jumpDown) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_2());
                 this.setPosition(this.getX(), this.getY() - getJUMP_STEP_2());
-                yCount--;
+                yCountJump--;
             }
-            if (yCount > 0 && yCount < 25 && jumpDown) {
+            if (yCountJump > 0 && yCountJump < 25 && jumpDown) {
                 spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_1());
                 this.setPosition(this.getX(), this.getY() - getJUMP_STEP_1());
-                yCount--;
+                yCountJump--;
             }
 
 
-            if (yCount == 0 && jumpDown) {
+            if (yCountJump == 0 && jumpDown) {
                 needJump = false;
                 jumpUp = true;
                 jumpDown = false;
             }
         }
 
-        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN) && !needJump && !isMainGameScreenStop() && !Gdx.input.isKeyPressed(Input.Keys.R)) {
+        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.UP) && !needDelay02 && !Gdx.input.isKeyPressed(Input.Keys.DOWN) && !needJump && !isMainGameScreenStop() && !needAttack3 && !needAttack2) {
             if(isHeroLookLeft) {
                 textureHero = new Texture("characters/standingLeft.png");
-                textureRegionHero = new TextureRegion(textureHero);
-                spriteHero = new Sprite(textureRegionHero);
             }else{
                 textureHero = new Texture("characters/standingRight.png");
-                textureRegionHero = new TextureRegion(textureHero);
-                spriteHero = new Sprite(textureRegionHero);
             }
+            textureRegionHero = new TextureRegion(textureHero);
+            spriteHero = new Sprite(textureRegionHero);
         }
-
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 
-            if(!needJump) {
+            if (!needJump) {
                 walkSheet = new Texture("characters/runningLeft.png"); // #9
 
                 isHeroRun(walkSheet);
@@ -354,7 +550,7 @@ public class ActorHero extends Actor {
 
                 this.isHeroLookRight = false;
                 this.isHeroLookLeft = true;
-            }else{
+            } else {
                 spriteHero.setPosition(getX() - HERO_STEP - 5, getY());
                 this.setPosition(getX() - HERO_STEP - 5, getY());
                 this.isHeroLookRight = false;
@@ -363,10 +559,12 @@ public class ActorHero extends Actor {
                 textureRegionHero = new TextureRegion(textureHero);
                 spriteHero = new Sprite(textureRegionHero);
             }
+
+            comboCount = 1;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            if(!needJump) {
+            if (!needJump) {
                 walkSheet = new Texture("characters/runningRight.png"); // #9
 
                 isHeroRun(walkSheet);
@@ -376,7 +574,7 @@ public class ActorHero extends Actor {
 
                 this.isHeroLookRight = true;
                 this.isHeroLookLeft = false;
-            }else{
+            } else {
                 spriteHero.setPosition(getX() + HERO_STEP + 5, getY());
                 this.setPosition(getX() + HERO_STEP + 5, getY());
 
@@ -387,10 +585,12 @@ public class ActorHero extends Actor {
                 textureRegionHero = new TextureRegion(textureHero);
                 spriteHero = new Sprite(textureRegionHero);
             }
+
+            comboCount = 1;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            if(!needJump) {
+            if (!needJump) {
                 if (firstPressed == true) {
                     walkSheet = new Texture("characters/runningRight.png"); // #9
 
@@ -407,14 +607,16 @@ public class ActorHero extends Actor {
                     spriteHero.setPosition(getX(), getY() - HERO_STEP);
                     this.setPosition(getX(), getY() - HERO_STEP);
                 }
-            }else{
+            } else {
                 spriteHero.setPosition(getX(), getY() - HERO_STEP);
                 this.setPosition(getX(), getY() - HERO_STEP);
             }
+
+            comboCount = 1;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            if(!needJump) {
+            if (!needJump) {
                 if (firstPressed == true) {
                     walkSheet = new Texture("characters/runningRight.png"); // #9
 
@@ -433,34 +635,35 @@ public class ActorHero extends Actor {
                     spriteHero.setPosition(getX(), getY() + HERO_STEP);
                     this.setPosition(getX(), getY() + HERO_STEP);
                 }
-            }else{
+            } else {
                 spriteHero.setPosition(getX(), getY() + HERO_STEP);
                 this.setPosition(getX(), getY() + HERO_STEP);
             }
+
+            comboCount = 1;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             needJump = true;
+            comboCount = 1;
         }
 
         float W = Gdx.graphics.getWidth();
         float H = Gdx.graphics.getHeight();
 
+
         if(this.getY() <= -10){
             this.setPosition(this.getX(), -10);
             spriteHero.setPosition(spriteHero.getX(), -10);
         }
-
         if(this.getY() >= Gdx.graphics.getHeight() - H / 5){
             this.setPosition(this.getX(), Gdx.graphics.getHeight() - H / 5);
             spriteHero.setPosition(spriteHero.getX(), Gdx.graphics.getHeight() - H / 5);
         }
-
         if(this.getX() >= W - W / 7){
             this.setPosition(W - W / 7, this.getY());
             spriteHero.setPosition(W - W / 7, this.getY());
         }
-
         if(this.getX() <= -10){
             this.setPosition(-10, this.getY());
             spriteHero.setPosition(-10, this.getY());

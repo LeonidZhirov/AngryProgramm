@@ -46,7 +46,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     }
 
     private ImageButton createBtn(float x, float y, String name){
-        Texture arrow_texture = new Texture("buttons/"+name+".png");
+        Texture arrow_texture = new Texture("buttons/" + name + ".png");
         TextureRegion arrow_TextureRegion = new TextureRegion(arrow_texture);
         TextureRegionDrawable arrow_TexRegionDrawable = new TextureRegionDrawable(arrow_TextureRegion);
         ImageButton arrow_btn = new ImageButton(arrow_TexRegionDrawable);
@@ -77,6 +77,8 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     @Override
     public void show() {
         stage = new Stage();
+
+
         actorHero = new ActorHero(textureHero);
         actorHero.setPosition(W / 2, H / 2);
         actorHero.setSpriteHeroPosition(W / 2, H / 2);
@@ -128,7 +130,43 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         attack_btn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent e, float x, float y){
-
+                if(actorHero.isFirstPressedAttack() && !actorHero.isNeedAttack2() && !actorHero.isNeedAttack3() && !actorHero.isNeedJump()) {
+                    if (actorHero.isHeroLookRight()) {
+                        actorHero.setTextureHeroAttack(new Texture("characters/attackingRight.png")); // #9
+                    }else{
+                        actorHero.setTextureHeroAttack(new Texture("characters/attackingLeft.png"));
+                    }
+                    actorHero.isHeroAttack(actorHero.getTextureHeroAttack());
+                    actorHero.setTimeSeconds(0f);
+                    actorHero.setFirstPressedAttack(false);
+                    actorHero.setComboCount(2);
+                    actorHero.setNeedDelay05(true);
+                    actorHero.setDelaySeconds(0f);
+                }else{
+                    if(actorHero.getTimeSeconds() < 5 && actorHero.getComboCount() == 2) {
+                        actorHero.setComboCount(3);
+                        actorHero.setNeedAttack2(true);
+                    }
+                    else if(actorHero.getTimeSeconds() < 5 && actorHero.getComboCount() == 3) {
+                        actorHero.setComboCount(1);
+                        actorHero.setNeedAttack3(true);
+                        actorHero.setNeedDelay05(true);
+                        actorHero.setDelaySeconds(0f);
+                    }
+                    else if(!actorHero.isNeedDelay05() || actorHero.isNeedDelay05() && actorHero.getDelaySeconds() > 0.5){
+                        if (actorHero.isHeroLookRight()) {
+                            actorHero.setTextureHeroAttack(new Texture("characters/attackingRight.png")); // #9
+                        }else{
+                            actorHero.setTextureHeroAttack(new Texture("characters/attackingLeft.png"));
+                        }
+                        actorHero.setComboCount(2);
+                        actorHero.isHeroAttack(actorHero.getTextureHeroAttack());
+                        actorHero.setNeedDelay05(false);
+                        actorHero.setDelay02Seconds(0);
+                        actorHero.setNeedDelay02(true);
+                    }
+                    actorHero.setTimeSeconds(0);
+                }
             }
         });
 
