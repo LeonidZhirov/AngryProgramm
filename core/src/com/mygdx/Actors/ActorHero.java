@@ -47,6 +47,7 @@ public class ActorHero extends Actor {
 
     private boolean isHeroLookRight = true;
     private boolean isHeroLookLeft = false;
+    private boolean isRight = false;
     private boolean firstPressed = true;
     private boolean firstPressedAttack = true;
     private boolean needJump = false;
@@ -88,6 +89,14 @@ public class ActorHero extends Actor {
         this.firstPressedAttack = firstPressedAttack;
     }
 
+    public void setRight(boolean right) {
+        isRight = right;
+    }
+
+    public boolean isRight() {
+        return isRight;
+    }
+
     public boolean isHeroLookRight() {
         return isHeroLookRight;
     }
@@ -100,11 +109,11 @@ public class ActorHero extends Actor {
         return firstPressedAttack;
     }
 
-    public int getxCountAttack2n3() {
+    public int getXCountAttack2n3() {
         return xCountAttack2n3;
     }
 
-    public void setxCountAttack2n3(int xCountAttack2n3) {
+    public void setXCountAttack2n3(int xCountAttack2n3) {
         this.xCountAttack2n3 = xCountAttack2n3;
     }
 
@@ -523,6 +532,8 @@ public class ActorHero extends Actor {
 
 
             if (yCountJump == 0 && jumpDown) {
+                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - 4.3f);
+                this.setPosition(this.getX(), this.getY() - 4.3f);
                 needJump = false;
                 jumpUp = true;
                 jumpDown = false;
@@ -586,8 +597,12 @@ public class ActorHero extends Actor {
                 textureRegionHero = new TextureRegion(textureHero);
                 spriteHero = new Sprite(textureRegionHero);
             }
-
+            isRight = true;
             comboCount = 1;
+        }
+
+        if(!Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            isRight = false;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {

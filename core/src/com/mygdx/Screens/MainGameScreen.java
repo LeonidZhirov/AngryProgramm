@@ -65,14 +65,14 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     private ActorEnemy actorEnemy;
     private Shadow shadowHero;
 
-    private Boolean isUp;
-    private Boolean isDown;
-    private Boolean isRight;
-    private Boolean isLeft;
-    private Boolean isLeftUp;
-    private Boolean isLeftDown;
-    private Boolean isRightUp;
-    private Boolean isRightDown;
+    public Boolean isUp;
+    public Boolean isDown;
+    public Boolean isRight;
+    public Boolean isLeft;
+    public Boolean isLeftUp;
+    public Boolean isLeftDown;
+    public Boolean isRightUp;
+    public Boolean isRightDown;
 
     @Override
     public void show() {
@@ -82,9 +82,9 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         actorHero = new ActorHero(textureHero);
         actorHero.setPosition(W / 2, H / 2);
         actorHero.setSpriteHeroPosition(W / 2, H / 2);
-
-        shadowHero = new Shadow(actorHero);
+        shadowHero = new Shadow(actorHero, "shadow.png");
         shadowHero.setPosition(W/2,H/2);
+
 //        actorEnemy = new ActorEnemy(actorHero);
 //        actorEnemy.setPosition(100,100);
 //        stage.addActor(actorEnemy);
@@ -105,6 +105,13 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         ImageButton jump_btn = createBtn(W - 145, H - 405, "jump");
         ImageButton attack_btn = createBtn(W - 85, H - 405, "attack");
 
+
+        Gdx.input.setInputProcessor(stage);
+        stage.addActor(shadowHero);
+        stage.addActor(actorHero);
+//        actorHero.rotateBy(180);
+//        actorHero.act(100);
+
         // stage.addActor(arrows)
         stage.addActor(arrow_u_btn);
         stage.addActor(arrow_l_btn);
@@ -117,11 +124,6 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         stage.addActor(jump_btn);
         stage.addActor(attack_btn);
 
-        Gdx.input.setInputProcessor(stage);
-        stage.addActor(actorHero);
-        stage.addActor(shadowHero);
-//        actorHero.rotateBy(180);
-//        actorHero.act(100);
 
         jump_btn.addListener(new ClickListener(){
            @Override
@@ -209,6 +211,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 actorHero.setMainGameScreenStop(true);
                 isRight=true;
+                actorHero.setRight(true);
                 return true;
             }
 
@@ -216,6 +219,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 actorHero.setMainGameScreenStop(false);
                 isRight=false;
+                actorHero.setRight(false);
             }
         });
         arrow_l_btn.addListener(new InputListener(){
