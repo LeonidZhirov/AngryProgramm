@@ -607,7 +607,7 @@ public class ActorHero extends Actor {
 
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             if (!needJump) {
-                if (firstPressed == true) {
+                if (firstPressed) {
                     walkSheet = new Texture("characters/runningRight.png"); // #9
 
                     isHeroRun(walkSheet);
@@ -633,7 +633,7 @@ public class ActorHero extends Actor {
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             if (!needJump) {
-                if (firstPressed == true) {
+                if (firstPressed) {
                     walkSheet = new Texture("characters/runningRight.png"); // #9
 
                     isHeroRun(walkSheet);

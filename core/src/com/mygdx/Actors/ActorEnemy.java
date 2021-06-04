@@ -1,6 +1,7 @@
 package com.mygdx.Actors;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -17,7 +18,7 @@ public class ActorEnemy extends Actor
     private Sprite spriteEnemy;
     private boolean alive;
     private ActorHero actorHero;
-    private final float STEP = 5f;
+    private final float STEP = 2f;
 
     private Texture walkSheet;
     private TextureRegion[] walkFrames; // #5
@@ -28,9 +29,31 @@ public class ActorEnemy extends Actor
     private Animation walkAnimation; // #3
     private SpriteBatch spriteBatch;
     private boolean firstPressed = true;
+    private float heroPositionX;
+    private float heroPositionY;
+
+    private boolean needDelay4 = false;
+    private boolean needDelay02 = false;
+    private boolean needAttack2or3 = false;
+    float delaySeconds4 = 0f;
 
     private boolean isEnemyLookRight = true;
     private boolean isEnemyLookLeft = false;
+    private boolean isRunning = false;
+    private Texture textureEnemyAttack;
+    private TextureRegion[] attackFrames;
+    private Animation attackAnimation;
+    private boolean needAttack2 = false;
+    private boolean needAttack3 = false;
+    private boolean canAttackX = false;
+    private boolean canAttackY = false;
+    private boolean firstPressedAttack = true;
+    private float timeSeconds = 0f;
+    private float delay02Seconds = 0f;
+    private int comboCount = 1;
+    private int xCountAttack2n3 = 0;
+    private float ATTACK2N3_STEP = 20f;
+
 
     private void isEnemyRun(Texture walkSheet) {
         this.walkSheet = walkSheet;
@@ -89,6 +112,32 @@ public class ActorEnemy extends Actor
         spriteBatch.end();
     }
 
+    private void isEnemyAttack(Texture textureEnemyAttack) {
+        this.textureEnemyAttack = textureEnemyAttack;
+        TextureRegion[][] tmp = TextureRegion.split(textureEnemyAttack, textureEnemyAttack.getWidth() / FRAME_COLS, textureEnemyAttack.getHeight() / FRAME_ROWS);
+        attackFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+
+        for (int i = 0; i < FRAME_ROWS; i++)
+        {
+            for (int j = 0; j < FRAME_COLS; j++)
+            {
+                attackFrames[index++] = tmp[i][j];
+            }
+        }
+
+        attackAnimation = new Animation(0.05f, attackFrames); // #11
+        spriteBatch = new SpriteBatch(); // #12
+        stateTime = 0f; // #13
+
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // #14
+        stateTime += Gdx.graphics.getDeltaTime() * 5; // #15
+        currentFrame = (TextureRegion) attackAnimation.getKeyFrame(stateTime, false); // #16
+
+        textureRegionEnemy = new TextureRegion(currentFrame);
+        spriteEnemy = new Sprite(textureRegionEnemy);
+    }
+
     public ActorEnemy(ActorHero actorHero) {
         textureEnemy = new Texture("characters/standingRight.png");
         textureRegionEnemy = new TextureRegion(textureEnemy);
@@ -100,99 +149,215 @@ public class ActorEnemy extends Actor
 
     public void act(float delta) {
         super.act(delta);
-        if (this.getX() != actorHero.getX()) {
+
+        delaySeconds4 += Gdx.graphics.getDeltaTime();
+
+
+        if (Math.abs(this.getX() - actorHero.getX()) > 60) {
+            canAttackX = false;
             if (this.getX() < actorHero.getX()) {
+                isRunning = true;
                 walkSheet = new Texture("characters/runningRight.png"); // #9
 
                 isEnemyRun(walkSheet);
-                this.setPosition(this.getX() + 5f, this.getY());
-                spriteEnemy.setPosition(this.getX() + 5f, this.getY());
+
+                this.setPosition(this.getX() + STEP, this.getY());
+                spriteEnemy.setPosition(this.getX() + STEP, this.getY());
 
                 this.isEnemyLookRight = true;
                 this.isEnemyLookLeft = false;
             }
-
-            if (this.getX() > actorHero.getX()) {
+            else if (this.getX() > actorHero.getX()) {
+                isRunning = true;
                 walkSheet = new Texture("characters/runningLeft.png"); // #9
 
                 isEnemyRun(walkSheet);
 
-                this.setPosition(this.getX() - 5f, this.getY());
-                spriteEnemy.setPosition(this.getX() - 5f, this.getY());
+                this.setPosition(this.getX() - STEP, this.getY());
+                spriteEnemy.setPosition(this.getX() - STEP, this.getY());
 
                 this.isEnemyLookRight = false;
                 this.isEnemyLookLeft = true;
             }
+
+        }else{
+            canAttackX = true;
         }
-
-        if (this.getY() != actorHero.getY()) {
+        if (Math.abs(this.getY() - actorHero.getY()) > 10) {
+            canAttackY = false;
             if (this.getY() < actorHero.getY()) {
-                walkSheet = new Texture("characters/runningRight.png"); // #9
+                if (firstPressed) {
+                    walkSheet = new Texture("characters/runningRight.png"); // #9
 
-                isEnemyRun(walkSheet);
+                    isEnemyRun(walkSheet);
 
-                this.setPosition(this.getX(), this.getY() + 5f);
-                spriteEnemy.setPosition(this.getX(), this.getY() + 5f);
 
-                this.firstPressed = false;
-                this.isEnemyLookLeft = false;
-                this.isEnemyLookRight = true;
+                    this.setPosition(this.getX(), this.getY() + STEP);
+                    spriteEnemy.setPosition(this.getX(), this.getY() + STEP);
 
-            } else {
-                isEnemyRun();
+                    this.firstPressed = false;
+                    this.isEnemyLookLeft = false;
+                    this.isEnemyLookRight = true;
+                }
+                else
+                {
 
-                this.setPosition(this.getX(), this.getY() + 5f);
-                spriteEnemy.setPosition(this.getX(), this.getY() + 5f);
+                    isEnemyRun();
+
+//                    if (this.getY() <= actorHero.getY() - 20f)
+//                    {
+                    this.setPosition(this.getX(), this.getY() + STEP);
+                    spriteEnemy.setPosition(this.getX(), this.getY() + STEP);
+                }
             }
-
-
             if (this.getY() > actorHero.getY()) {
                 if (firstPressed) {
                     walkSheet = new Texture("characters/runningRight.png"); // #9
 
                     isEnemyRun(walkSheet);
 
-                    this.setPosition(this.getX(), this.getY() - 5f);
-                    spriteEnemy.setPosition(this.getX(), this.getY() - 5f);
+                    this.setPosition(this.getX(), this.getY() - STEP - 1f);
+                    spriteEnemy.setPosition(this.getX(), this.getY() - STEP - 1f);
+
                     this.firstPressed = false;
                     this.isEnemyLookLeft = false;
                     this.isEnemyLookRight = true;
                 } else {
                     isEnemyRun();
-//                    textureEnemy = new Texture("characters/sittingRight.png");
-//                    textureRegionEnemy = new TextureRegion(textureEnemy);
-//                    spriteEnemy = new Sprite(textureRegionEnemy);
-                    this.setPosition(this.getX(), this.getY() - 6f);
-                    spriteEnemy.setPosition(this.getX(), this.getY() - 6f);
-                }
 
+                    this.setPosition(this.getX(), this.getY() - STEP - 1f);
+                    spriteEnemy.setPosition(this.getX(), this.getY() - STEP - 1f);
+                }
+            }
+        }else{
+            canAttackY = true;
+        }
+
+        delay02Seconds += Gdx.graphics.getDeltaTime();
+
+        if(delay02Seconds > 0.2f){
+            needDelay02 = false;
+        }
+
+        if(canAttackX && canAttackY) {
+            isRunning = false;
+            if (needAttack2or3) {
+                if (delaySeconds4 >= 4 && comboCount == 2) {
+                    needAttack2 = true;
+                    comboCount = 3;
+                    needDelay02 = true;
+                    delay02Seconds = 0f;
+                } else if (delaySeconds4 >= 4 && comboCount == 3) {
+                    needAttack3 = true;
+                    comboCount = 1;
+                    needAttack2or3 = false;
+                    needDelay02 = true;
+                    delay02Seconds = 0f;
+                }
+            } else {
+                if (isEnemyLookRight) {
+                    textureEnemyAttack = new Texture("characters/attackingRight.png"); // #9
+                } else {
+                    textureEnemyAttack = new Texture("characters/attackingLeft.png");
+                }
+                isEnemyAttack(textureEnemyAttack);
+                comboCount = 2;
+                delaySeconds4 = 0f;
+                needAttack2or3 = true;
+                needDelay02 = true;
+                delay02Seconds = 0f;
+            }
+            timeSeconds = 0f;
+        }
+
+        if(this.getX() < actorHero.getX()){
+            isEnemyLookRight = true;
+            isEnemyLookLeft = false;
+        }else if(this.getX() > actorHero.getX()){
+            isEnemyLookLeft = true;
+            isEnemyLookRight = false;
+        }
+
+        if(!isRunning && !needDelay02){
+            if(isEnemyLookRight) {
+                this.textureEnemy = new Texture("characters/defaultRight.png");
+                this.textureRegionEnemy = new TextureRegion(this.textureEnemy);
+                this.spriteEnemy = new Sprite(this.textureRegionEnemy);
+            }else{
+                this.textureEnemy = new Texture("characters/defaultLeft.png");
+                this.textureRegionEnemy = new TextureRegion(this.textureEnemy);
+                this.spriteEnemy = new Sprite(this.textureRegionEnemy);
             }
         }
 
-//        if (this.getY() == actorHero.getY()) {
-//            if (isEnemyLookLeft) {
-//                textureEnemy = new Texture("characters/standingLeft.png");
-//                textureRegionEnemy = new TextureRegion(textureEnemy);
-//                spriteEnemy = new Sprite(textureRegionEnemy);
-//            } else {
-//                textureEnemy = new Texture("characters/standingRight.png");
-//                textureRegionEnemy = new TextureRegion(textureEnemy);
-//                spriteEnemy = new Sprite(textureRegionEnemy);
-//            }
-//        }
+        if(needAttack2) {
+            if (xCountAttack2n3 < 7) {
+                if (isEnemyLookRight) {
+                    textureEnemy = new Texture("characters/strangeRight1.png");
+                    textureRegionEnemy = new TextureRegion(textureEnemy);
+                    spriteEnemy = new Sprite(textureRegionEnemy);
+                    spriteEnemy.setPosition(spriteEnemy.getX() + ATTACK2N3_STEP, spriteEnemy.getY());
+                    this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
+                } else {
+                    textureEnemy = new Texture("characters/strangeLeft1.png");
+                    textureRegionEnemy = new TextureRegion(textureEnemy);
+                    spriteEnemy = new Sprite(textureRegionEnemy);
+                    spriteEnemy.setPosition(spriteEnemy.getX() - ATTACK2N3_STEP, spriteEnemy.getY());
+                    this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                }
+                xCountAttack2n3 += 7;
+            }
+            if (xCountAttack2n3 == 7) {
+                needAttack2 = false;
+                xCountAttack2n3 = 0;
+            }
+        }
 
-//        if (this.getX() == actorHero.getX()) {
-//            if (isEnemyLookLeft) {
-//                textureEnemy = new Texture("characters/standingLeft.png");
-//                textureRegionEnemy = new TextureRegion(textureEnemy);
-//                spriteEnemy = new Sprite(textureRegionEnemy);
-//            } else {
-//                textureEnemy = new Texture("characters/standingRight.png");
-//                textureRegionEnemy = new TextureRegion(textureEnemy);
-//                spriteEnemy = new Sprite(textureRegionEnemy);
-//            }
-//        }
+        if(needAttack3) {
+            boolean isLooking = isEnemyLookRight;
+            if (xCountAttack2n3 < 7) {
+                if (isEnemyLookLeft) {
+                    textureEnemy = new Texture("characters/strangeRight1.png");
+                    textureRegionEnemy = new TextureRegion(textureEnemy);
+                    spriteEnemy = new Sprite(textureRegionEnemy);
+                    spriteEnemy.setPosition(spriteEnemy.getX() + ATTACK2N3_STEP, spriteEnemy.getY());
+                    this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
+
+                } else {
+                    textureEnemy = new Texture("characters/strangeLeft1.png");
+                    textureRegionEnemy = new TextureRegion(textureEnemy);
+                    spriteEnemy = new Sprite(textureRegionEnemy);
+                    spriteEnemy.setPosition(spriteEnemy.getX() - ATTACK2N3_STEP, spriteEnemy.getY());
+                    this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                }
+                xCountAttack2n3 += 7;
+            }
+            if (xCountAttack2n3 == 7) {
+                needAttack3 = false;
+                xCountAttack2n3 = 0;
+                isEnemyLookRight = isLooking;
+                isEnemyLookLeft = !isLooking;
+            }
+        }
+
+
     }
 
     public void draw(Batch batch, float parentAlpha) { batch.draw(textureRegionEnemy, getX(), getY()); }
+
+    public void setTimeSeconds(float timeSeconds) {
+        this.timeSeconds = timeSeconds;
+    }
+
+    public float getTimeSeconds() {
+        return timeSeconds;
+    }
+
+    public void setFirstPressedAttack(boolean firstPressedAttack) {
+        this.firstPressedAttack = firstPressedAttack;
+    }
+
+    public boolean getFirstPressedAttack() {
+        return firstPressedAttack;
+    }
 }

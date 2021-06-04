@@ -85,9 +85,9 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         shadowHero = new Shadow(actorHero, "shadow.png");
         shadowHero.setPosition(W/2,H/2);
 
-//        actorEnemy = new ActorEnemy(actorHero);
-//        actorEnemy.setPosition(100,100);
-//        stage.addActor(actorEnemy);
+        actorEnemy = new ActorEnemy(actorHero);
+        actorEnemy.setPosition(100,100);
+        stage.addActor(actorEnemy);
 
 //        move = new MoveToAction();
 //        move.setActor(actorHero);
