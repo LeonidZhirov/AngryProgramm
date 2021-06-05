@@ -131,7 +131,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
         ImageButton arrow_u_btn = createBtn(280, 500, "arrow_u");
         ImageButton arrow_d_btn = createBtn(280, 60, "arrow_d");
-        ImageButton arrow_l_btn = createBtn(280, 60, "arrow_l");
+        ImageButton arrow_l_btn = createBtn(60, 280, "arrow_l");
         ImageButton arrow_r_btn = createBtn(500, 280, "arrow_r");
         ImageButton arrow_ru_btn = createBtn(500, 500, "arrow_ru");
         ImageButton arrow_rd_btn = createBtn(500, 100, "arrow_rd");
