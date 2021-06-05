@@ -107,7 +107,7 @@ public class ActorEnemy extends Actor
 
         textureRegionEnemy = new TextureRegion(currentFrame);
         spriteEnemy = new Sprite(textureRegionEnemy);
-
+        comboCount = 1;
         spriteBatch.begin();
         spriteBatch.end();
     }
@@ -241,53 +241,76 @@ public class ActorEnemy extends Actor
 
         if(canAttackX && canAttackY) {
             isRunning = false;
-            if (needAttack2or3) {
+
+            if (needAttack2or3 && comboCount != 1) {
                 if (delaySeconds4 >= 4 && comboCount == 2) {
                     needAttack2 = true;
                     comboCount = 3;
                     needDelay02 = true;
                     delay02Seconds = 0f;
+
                 } else if (delaySeconds4 >= 4 && comboCount == 3) {
                     needAttack3 = true;
                     comboCount = 1;
                     needAttack2or3 = false;
                     needDelay02 = true;
                     delay02Seconds = 0f;
+
                 }
-            } else {
+            } else if (delaySeconds4 >= 4){
                 if (isEnemyLookRight) {
                     textureEnemyAttack = new Texture("characters/attackingRight.png"); // #9
                 } else {
                     textureEnemyAttack = new Texture("characters/attackingLeft.png");
                 }
                 isEnemyAttack(textureEnemyAttack);
+
                 comboCount = 2;
                 delaySeconds4 = 0f;
                 needAttack2or3 = true;
                 needDelay02 = true;
                 delay02Seconds = 0f;
+
+
+                if(actorHero.isHeroLookRight()) {
+                    actorHero.setTextureHero(new Texture("characters/scaryRight.png"));
+                }else{
+                    actorHero.setTextureHero(new Texture("characters/scaryLeft.png"));
+                }
+                actorHero.setNeedDelay02(true);
+                actorHero.setDelay02Seconds(0f);
+                actorHero.setTextureRegionHero(new TextureRegion(actorHero.getTextureHero()));
+                actorHero.setSpriteHero(new Sprite(actorHero.getTextureRegionHero()));
             }
             timeSeconds = 0f;
         }
 
-        if(this.getX() < actorHero.getX()){
+        if(delaySeconds4 == 0){
+            if(actorHero.getHP() == 0){
+                // DEAD SCREEN.SHOW()
+            }else {
+                actorHero.setHp(actorHero.getHP() - 1);
+            }
+        }
+
+
+        if (this.getX() < actorHero.getX()) {
             isEnemyLookRight = true;
             isEnemyLookLeft = false;
-        }else if(this.getX() > actorHero.getX()){
+        } else if (this.getX() > actorHero.getX()) {
             isEnemyLookLeft = true;
             isEnemyLookRight = false;
         }
 
+
         if(!isRunning && !needDelay02){
             if(isEnemyLookRight) {
                 this.textureEnemy = new Texture("characters/defaultRight.png");
-                this.textureRegionEnemy = new TextureRegion(this.textureEnemy);
-                this.spriteEnemy = new Sprite(this.textureRegionEnemy);
             }else{
                 this.textureEnemy = new Texture("characters/defaultLeft.png");
-                this.textureRegionEnemy = new TextureRegion(this.textureEnemy);
-                this.spriteEnemy = new Sprite(this.textureRegionEnemy);
             }
+            this.textureRegionEnemy = new TextureRegion(this.textureEnemy);
+            this.spriteEnemy = new Sprite(this.textureRegionEnemy);
         }
 
         if(needAttack2) {
@@ -339,7 +362,6 @@ public class ActorEnemy extends Actor
                 isEnemyLookLeft = !isLooking;
             }
         }
-
 
     }
 

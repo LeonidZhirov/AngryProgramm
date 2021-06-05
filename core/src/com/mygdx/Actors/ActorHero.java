@@ -23,11 +23,14 @@ public class ActorHero extends Actor {
     public SpriteBatch spriteBatch;
     private Texture textureHero;
     private TextureRegion textureRegionHero;
-    private float life = 100f;
-
+    private HP hpBar;
+    private Texture hpBarTexture;
+    private int hp = 8;
+    private int lives = 2;
 
     private Texture textureHeroAttack;
     private Sprite spriteHero;
+    private ActorEnemy actorEnemy;
 
     private final float STEP = 5f;
     private static final int FRAME_COLS = 3; // #1
@@ -58,6 +61,7 @@ public class ActorHero extends Actor {
     private boolean needAttack2 = false;
     private boolean needAttack3 = false;
 
+
     private boolean needDelay05 = false;
     private boolean needDelay02 = false;
 
@@ -71,6 +75,22 @@ public class ActorHero extends Actor {
 
     public void setMainGameScreenStop(boolean mainGameScreenStop) {
         MainGameScreenStop = mainGameScreenStop;
+    }
+
+    public int getHP() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public Texture getTextureHero() {
+        return textureHero;
+    }
+
+    public TextureRegion getTextureRegionHero() {
+        return textureRegionHero;
     }
 
     public boolean isMainGameScreenStop() {
@@ -170,11 +190,11 @@ public class ActorHero extends Actor {
     }
 
     public float getDelaySeconds() {
-        return delaySeconds;
+        return delay05Seconds;
     }
 
     public void setDelaySeconds(float delaySeconds) {
-        this.delaySeconds = delaySeconds;
+        this.delay05Seconds = delaySeconds;
     }
 
     public float getDelay02Seconds() {
@@ -252,12 +272,17 @@ public class ActorHero extends Actor {
     }
 
 
+
+
     public ActorHero(Texture textureHero) {
         this.textureHero = textureHero;
         textureRegionHero = new TextureRegion(this.textureHero);
         this.alive=true;
         spriteHero = new Sprite(textureRegionHero);
         setSize(spriteHero.getRegionWidth(), spriteHero.getRegionHeight());
+        actorEnemy = new ActorEnemy(this);
+        hpBarTexture = new Texture("hpbar/hp8.png");
+        hpBar = new HP(hpBarTexture);
     }
 
 
@@ -348,7 +373,7 @@ public class ActorHero extends Actor {
 
 
     private float timeSeconds = 0f;
-    private float delaySeconds = 0f;
+    private float delay05Seconds = 0f;
     private float delay02Seconds = 0f;
 
     public void act(float delta)
@@ -357,7 +382,7 @@ public class ActorHero extends Actor {
 
 
         timeSeconds += Gdx.graphics.getDeltaTime();
-        delaySeconds += Gdx.graphics.getDeltaTime();
+        delay05Seconds += Gdx.graphics.getDeltaTime();
         delay02Seconds += Gdx.graphics.getDeltaTime();
 
         if(delay02Seconds > 0.2f){
@@ -376,9 +401,13 @@ public class ActorHero extends Actor {
                 firstPressedAttack = false;
                 comboCount = 2;
                 needDelay05 = true;
-                delaySeconds = 0f;
+                delay05Seconds = 0f;
                 delay02Seconds = 0f;
                 needDelay02 = true;
+
+
+
+
             }else{
                 if(timeSeconds < 0.7 && comboCount == 2) {
                     comboCount = 3;
@@ -388,9 +417,9 @@ public class ActorHero extends Actor {
                     comboCount = 1;
                     needAttack3 = true;
                     needDelay05 = true;
-                    delaySeconds = 0f;
+                    delay05Seconds = 0f;
                 }
-                else if(!needDelay05 || needDelay05 && delaySeconds > 0.5){
+                else if(!needDelay05 || needDelay05 && delay05Seconds > 0.5){
                     if (isHeroLookRight) {
                         textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
                     }else{
@@ -462,8 +491,7 @@ public class ActorHero extends Actor {
 
 
 
-        if(needJump)
-        {
+        if(needJump) {
             if (yCountJump == 0 && jumpUp) {
                 if(isHeroLookRight) {
                     textureHero = new Texture("characters/jumpingRight.png");
@@ -664,17 +692,22 @@ public class ActorHero extends Actor {
             comboCount = 1;
         }
 
+
         float W = Gdx.graphics.getWidth();
         float H = Gdx.graphics.getHeight();
+
+
 
 
         if(this.getY() <= -10){
             this.setPosition(this.getX(), -10);
             spriteHero.setPosition(spriteHero.getX(), -10);
         }
-        if(this.getY() >= Gdx.graphics.getHeight() - H / 5){
-            this.setPosition(this.getX(), Gdx.graphics.getHeight() - H / 5);
-            spriteHero.setPosition(spriteHero.getX(), Gdx.graphics.getHeight() - H / 5);
+        if(!needJump) {
+            if (this.getY() >= H / 3) {
+                this.setPosition(this.getX(), H / 3);
+                spriteHero.setPosition(spriteHero.getX(), H / 3);
+            }
         }
         if(this.getX() >= W - W / 7){
             this.setPosition(W - W / 7, this.getY());
@@ -687,10 +720,10 @@ public class ActorHero extends Actor {
 
 
 
+
     }
 
     public void draw (Batch batch, float parentAlpha) {
         batch.draw(textureRegionHero, getX(), getY());
     }
 }
-

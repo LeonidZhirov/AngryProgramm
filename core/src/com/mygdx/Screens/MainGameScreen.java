@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.Actors.ActorEnemy;
 import com.mygdx.Actors.ActorHero;
+import com.mygdx.Actors.HP;
 import com.mygdx.Actors.Shadow;
 
 import javax.xml.soap.Text;
@@ -27,13 +28,19 @@ import javax.xml.soap.Text;
 
 public class MainGameScreen extends BaseScreen implements ApplicationListener
 {
+    private Texture background;
+    private int a;
+
     public MainGameScreen(MainGame game)
     {
         super(game);
         batch = new SpriteBatch();
+        background = new Texture("Background.png");
+        a = 8;
 
         textureHero = new Texture("characters/standingLeft.png");
         spriteHero = new Sprite(textureHero);
+        hpBarTexture = new Texture("hpbar/hp8.png");
         isUp=false;
         isDown=false;
         isRight = false;
@@ -64,6 +71,8 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     private Sprite spriteHero;
     private ActorEnemy actorEnemy;
     private Shadow shadowHero;
+    private HP hpBar;
+    private Texture hpBarTexture;
 
     public Boolean isUp;
     public Boolean isDown;
@@ -74,20 +83,28 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     public Boolean isRightUp;
     public Boolean isRightDown;
 
+
+
     @Override
     public void show() {
         stage = new Stage();
 
 
         actorHero = new ActorHero(textureHero);
-        actorHero.setPosition(W / 2, H / 2);
-        actorHero.setSpriteHeroPosition(W / 2, H / 2);
+        actorHero.setPosition(W / 2, H / 4);
+        actorHero.setSpriteHeroPosition(W / 2, H / 4);
         shadowHero = new Shadow(actorHero, "shadow.png");
         shadowHero.setPosition(W/2,H/2);
 
         actorEnemy = new ActorEnemy(actorHero);
         actorEnemy.setPosition(100,100);
+
         stage.addActor(actorEnemy);
+
+        hpBar = new HP(hpBarTexture);
+        hpBar.setPosition(440, 460);
+
+        stage.addActor(hpBar);
 
 //        move = new MoveToAction();
 //        move.setActor(actorHero);
@@ -126,10 +143,10 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
 
         jump_btn.addListener(new ClickListener(){
-           @Override
-           public void clicked(InputEvent e, float x, float y){
-               actorHero.isHeroJump(true);
-           }
+            @Override
+            public void clicked(InputEvent e, float x, float y){
+                actorHero.isHeroJump(true);
+            }
         });
 
         attack_btn.addListener(new ClickListener(){
@@ -304,7 +321,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 
         if(isUp)
@@ -481,7 +498,20 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
             }
         }
 
+        hpBar.setHpBarTexture(new Texture("hpbar/hp" + actorHero.getHP() + ".png"));
+        hpBar.setHpBarTextureRegion(new TextureRegion(hpBar.getHpBarTexture()));
+        hpBar.setHpBarSprite(new Sprite(hpBar.getHpBarTextureRegion()));
+
         stage.act(delta);
+
+        stage.getBatch().begin();
+        stage.getBatch().draw(background, 0, 0, W, H);
+        stage.getBatch().end();
+
+//        stage.getBatch().begin();
+//        stage.getBatch().draw(hpBarTexture, 440, 460, hpBarTexture.getWidth(), hpBarTexture.getHeight());
+//        stage.getBatch().end();
+
         stage.draw();
     }
 
