@@ -32,7 +32,7 @@ public class ActorHero extends Actor {
     private Sprite spriteHero;
     private ActorEnemy enemy;
 
-    private final float STEP = 5f;
+    private final float STEP = 25f;
     private static final int FRAME_COLS = 3; // #1
     private static final int FRAME_ROWS = 1; // #2
     private int yCountJump = 0;
@@ -67,11 +67,11 @@ public class ActorHero extends Actor {
 
     public final float HERO_STEP = 2f;
 
-    private final float JUMP_STEP_1 = 5f;
-    private final float JUMP_STEP_2 = 2.5f;
-    private final float JUMP_STEP_3 = 1.2f;
-    private final float JUMP_STEP_4 = 0.7f;
-    private final float ATTACK2N3_STEP = 20f;
+    private final float JUMP_STEP_1 = 25f;
+    private final float JUMP_STEP_2 = 12.5f;
+    private final float JUMP_STEP_3 = 6f;
+    private final float JUMP_STEP_4 = 3.5f;
+    private final float ATTACK2N3_STEP = 100f;
 
     public void setMainGameScreenStop(boolean mainGameScreenStop) {
         MainGameScreenStop = mainGameScreenStop;
@@ -372,7 +372,7 @@ public class ActorHero extends Actor {
 
         textureRegionHero = new TextureRegion(currentFrame);
         spriteHero = new Sprite(textureRegionHero);
-        if(Math.abs(enemy.getX() - this.getX()) < 60 && Math.abs(enemy.getY() - this.getY()) <= 10) {
+        if(Math.abs(enemy.getX() - this.getX()) < 300 && Math.abs(enemy.getY() - this.getY()) <= 50) {
             if (enemy.isAlive()) {
                 enemy.setHp(enemy.getHp() - 1);
                 enemy.setNeedDelayHp(true);
@@ -469,7 +469,7 @@ public class ActorHero extends Actor {
                     needDelay02 = true;
                 }
 
-                if (Math.abs(enemy.getX() - this.getX()) <= 21 && Math.abs(enemy.getY() - this.getY()) <= 10) {
+                if (Math.abs(enemy.getX() - this.getX()) <= 205 && Math.abs(enemy.getY() - this.getY()) <= 50) {
                     if (enemy.isAlive()) {
                         enemy.setHp(enemy.getHp() - 1);
                         enemy.setNeedDelayHp(true);
@@ -504,7 +504,7 @@ public class ActorHero extends Actor {
                     delay02Seconds = 0f;
                     needDelay02 = true;
                 }
-                if (Math.abs(enemy.getX() - this.getX()) <= 21 && Math.abs(enemy.getY() - this.getY()) <= 10) {
+                if (Math.abs(enemy.getX() - this.getX()) <= 105 && Math.abs(enemy.getY() - this.getY()) <= 50) {
                     if (enemy.isAlive()) {
                         enemy.setHp(enemy.getHp() - 1);
                         enemy.setNeedDelayHp(true);
@@ -608,14 +608,14 @@ public class ActorHero extends Actor {
 
                     isHeroRun(walkSheet);
 
-                    spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
-                    this.setPosition(getX() - HERO_STEP - 3, getY());
+                    spriteHero.setPosition(getX() - HERO_STEP - 15, getY());
+                    this.setPosition(getX() - HERO_STEP - 15, getY());
 
                     this.isHeroLookRight = false;
                     this.isHeroLookLeft = true;
                 } else {
-                    spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
-                    this.setPosition(getX() - HERO_STEP - 3, getY());
+                    spriteHero.setPosition(getX() - HERO_STEP - 15, getY());
+                    this.setPosition(getX() - HERO_STEP - 15, getY());
                     this.isHeroLookRight = false;
                     this.isHeroLookLeft = true;
                     textureHero = new Texture("characters/jumpingLeft.png");
@@ -632,14 +632,14 @@ public class ActorHero extends Actor {
 
                     isHeroRun(walkSheet);
 
-                    spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
-                    this.setPosition(getX() + HERO_STEP + 3, getY());
+                    spriteHero.setPosition(getX() + HERO_STEP + 15, getY());
+                    this.setPosition(getX() + HERO_STEP + 15, getY());
 
                     this.isHeroLookRight = true;
                     this.isHeroLookLeft = false;
                 } else {
-                    spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
-                    this.setPosition(getX() + HERO_STEP + 3, getY());
+                    spriteHero.setPosition(getX() + HERO_STEP + 15, getY());
+                    this.setPosition(getX() + HERO_STEP + 15, getY());
 
                     this.isHeroLookRight = true;
                     this.isHeroLookLeft = false;
@@ -725,9 +725,9 @@ public class ActorHero extends Actor {
             float H = Gdx.graphics.getHeight();
 
 
-            if (this.getY() <= -10) {
-                this.setPosition(this.getX(), -10);
-                spriteHero.setPosition(spriteHero.getX(), -10);
+            if (this.getY() <= -50) {
+                this.setPosition(this.getX(), -50);
+                spriteHero.setPosition(spriteHero.getX(), -50);
             }
             if (!needJump) {
                 if (this.getY() >= H / 3) {
@@ -735,13 +735,13 @@ public class ActorHero extends Actor {
                     spriteHero.setPosition(spriteHero.getX(), H / 3);
                 }
             }
-            if (this.getX() >= W - W / 7) {
-                this.setPosition(W - W / 7, this.getY());
-                spriteHero.setPosition(W - W / 7, this.getY());
+            if (this.getX() >= W) {
+                this.setPosition(W , this.getY());
+                spriteHero.setPosition(W , this.getY());
             }
-            if (this.getX() <= -10) {
-                this.setPosition(-10, this.getY());
-                spriteHero.setPosition(-10, this.getY());
+            if (this.getX() <= -50) {
+                this.setPosition(-50, this.getY());
+                spriteHero.setPosition(-50, this.getY());
             }
         }
 

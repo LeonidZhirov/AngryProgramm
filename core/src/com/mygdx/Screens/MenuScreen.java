@@ -57,7 +57,7 @@ public class MenuScreen extends BaseScreen
     {
         super(game);
         stage = new Stage();
-        start_btn = createBtn(200, 200);
+        start_btn = createBtn(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         start_btn.addCaptureListener(new ClickListener() {
             @Override

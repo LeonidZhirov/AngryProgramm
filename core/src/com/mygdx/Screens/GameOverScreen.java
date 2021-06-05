@@ -35,7 +35,7 @@ public class GameOverScreen extends BaseScreen
     public GameOverScreen(final MainGame game) {
         super(game);
         stage = new Stage();
-        menu_btn = createBtn(Gdx.graphics.getWidth() / 2, Gdx.graphics.getWidth() / 2);
+        menu_btn = createBtn(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         menu_btn.addCaptureListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y){
@@ -43,8 +43,7 @@ public class GameOverScreen extends BaseScreen
             }
         });
 
-        menu_btn.setSize(200, 100);
-        menu_btn.setPosition(350, 50);
+        menu_btn.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         stage.addActor(menu_btn);
     }
 

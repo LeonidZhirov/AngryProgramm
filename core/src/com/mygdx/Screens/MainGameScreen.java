@@ -119,9 +119,9 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         stage.addActor(actorEnemy);
 
         hpBar = new HP(hpBarTexture);
-        hpBar.setPosition(440, 460);
+        hpBar.setPosition(W - 850, H - 200);
 
-        heart.setPosition(hpBar.getX() - 35, hpBar.getY() - 12);
+        heart.setPosition(hpBar.getX() - 140, hpBar.getY() - 48);
         stage.addActor(hpBar);
 
 //        move = new MoveToAction();
@@ -129,16 +129,16 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
         // Arrows
 
-        ImageButton arrow_u_btn = createBtn(W / 6, H - 350, "arrow_u");
-        ImageButton arrow_d_btn = createBtn(W / 6, H - 460, "arrow_d");
-        ImageButton arrow_l_btn = createBtn(W / 6 - 55, H - 405, "arrow_l");
-        ImageButton arrow_r_btn = createBtn(W / 6 + 55, H - 405, "arrow_r");
-        ImageButton arrow_ru_btn = createBtn(W / 6 + 55, H - 350, "arrow_ru");
-        ImageButton arrow_rd_btn = createBtn(W / 6 + 55, H - 450, "arrow_rd");
-        ImageButton arrow_lu_btn = createBtn(W / 6 - 45, H - 350, "arrow_lu");
-        ImageButton arrow_ld_btn = createBtn(W / 6 - 45, H - 450, "arrow_ld");
-        ImageButton jump_btn = createBtn(W - 145, H - 405, "jump");
-        ImageButton attack_btn = createBtn(W - 85, H - 405, "attack");
+        ImageButton arrow_u_btn = createBtn(280, 500, "arrow_u");
+        ImageButton arrow_d_btn = createBtn(280, 60, "arrow_d");
+        ImageButton arrow_l_btn = createBtn(280, 60, "arrow_l");
+        ImageButton arrow_r_btn = createBtn(500, 280, "arrow_r");
+        ImageButton arrow_ru_btn = createBtn(500, 500, "arrow_ru");
+        ImageButton arrow_rd_btn = createBtn(500, 100, "arrow_rd");
+        ImageButton arrow_lu_btn = createBtn(100, 500, "arrow_lu");
+        ImageButton arrow_ld_btn = createBtn(100, 100, "arrow_ld");
+        ImageButton jump_btn = createBtn(W - 400, H / 2  - 200, "jump");
+        ImageButton attack_btn = createBtn(W - 700, H / 2 - 200, "attack");
 
 
         Gdx.input.setInputProcessor(stage);
@@ -517,14 +517,14 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
                 actorHero.isHeroRun(walkSheet);
 
-                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY() + actorHero.HERO_STEP);
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 15, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 15, actorHero.getY() + actorHero.HERO_STEP);
 
                 actorHero.setHeroLookRight(true);
                 actorHero.setHeroLookLeft(false);
             }else{
-                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 3, spriteHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 3, actorHero.getY() + actorHero.HERO_STEP);
+                spriteHero.setPosition(spriteHero.getX() + actorHero.HERO_STEP + 15, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() + actorHero.HERO_STEP + 15, actorHero.getY() + actorHero.HERO_STEP);
                 actorHero.setHeroLookRight(true);
                 actorHero.setHeroLookLeft(false);
                 textureHero = new Texture("characters/jumpingRight.png");
@@ -539,14 +539,14 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
                 actorHero.isHeroRun(walkSheet);
 
-                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY() + actorHero.HERO_STEP);
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 15, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 15, actorHero.getY() + actorHero.HERO_STEP);
 
                 actorHero.setHeroLookRight(false);
                 actorHero.setHeroLookLeft(true);
             }else{
-                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 3, spriteHero.getY() + actorHero.HERO_STEP);
-                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 3, actorHero.getY() + actorHero.HERO_STEP);
+                spriteHero.setPosition(spriteHero.getX() - actorHero.HERO_STEP - 15, spriteHero.getY() + actorHero.HERO_STEP);
+                actorHero.setPosition(actorHero.getX() - actorHero.HERO_STEP - 15, actorHero.getY() + actorHero.HERO_STEP);
                 actorHero.setHeroLookRight(false);
                 actorHero.setHeroLookLeft(true);
                 textureHero = new Texture("characters/jumpingLeft.png");

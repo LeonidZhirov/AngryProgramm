@@ -18,7 +18,7 @@ public class ActorEnemy extends Actor
     private Sprite spriteEnemy;
     private boolean alive;
     private ActorHero actorHero;
-    private final float STEP = 2f;
+    private final float STEP = 10f;
     private int damage = 1;
 
     private Shadow shadow;
@@ -60,7 +60,7 @@ public class ActorEnemy extends Actor
     private float delay02Seconds = 0f;
     private int comboCount = 1;
     private int xCountAttack2n3 = 0;
-    private float ATTACK2N3_STEP = 20f;
+    private float ATTACK2N3_STEP = 100f;
 
     public void setShadow(Shadow shadow) {
         this.shadow = shadow;
@@ -216,7 +216,7 @@ public class ActorEnemy extends Actor
 
 
         if(alive && actorHero.isAlive() && !needDelayHp) {
-            if (Math.abs(this.getX() - actorHero.getX()) > 60) {
+            if (Math.abs(this.getX() - actorHero.getX()) > 300) {
                 canAttackX = false;
                 if (this.getX() < actorHero.getX()) {
                     isRunning = true;
@@ -245,7 +245,7 @@ public class ActorEnemy extends Actor
             } else {
                 canAttackX = true;
             }
-            if (Math.abs(this.getY() - shadow.getY()) > 10) {
+            if (Math.abs(this.getY() - shadow.getY()) > 50) {
                 canAttackY = false;
                 if (this.getY() < actorHero.getY()) {
                     if (firstPressed) {
@@ -275,8 +275,8 @@ public class ActorEnemy extends Actor
 
                         isEnemyRun(walkSheet);
 
-                        this.setPosition(this.getX(), this.getY() - STEP - 1f);
-                        spriteEnemy.setPosition(this.getX(), this.getY() - STEP - 1f);
+                        this.setPosition(this.getX(), this.getY() - STEP - 5f);
+                        spriteEnemy.setPosition(this.getX(), this.getY() - STEP - 5f);
 
                         this.firstPressed = false;
                         this.isEnemyLookLeft = false;
@@ -284,8 +284,8 @@ public class ActorEnemy extends Actor
                     } else {
                         isEnemyRun();
 
-                        this.setPosition(this.getX(), this.getY() - STEP - 1f);
-                        spriteEnemy.setPosition(this.getX(), this.getY() - STEP - 1f);
+                        this.setPosition(this.getX(), this.getY() - STEP - 5f);
+                        spriteEnemy.setPosition(this.getX(), this.getY() - STEP - 5f);
                     }
                 }
             } else {
