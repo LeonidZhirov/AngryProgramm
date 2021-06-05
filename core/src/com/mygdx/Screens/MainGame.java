@@ -18,7 +18,7 @@ public class MainGame extends Game {
         gameOverScreen = new GameOverScreen(this);
         setScreen(menuScreen);
         Music music = Gdx.audio.newMusic(Gdx.files.internal("torero.mp3"));
-        music.setVolume(0.1f);
+        music.setVolume(0.3f);
         music.setLooping(true);
         music.play();
     }
