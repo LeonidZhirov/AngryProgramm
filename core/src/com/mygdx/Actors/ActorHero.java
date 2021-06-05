@@ -30,7 +30,7 @@ public class ActorHero extends Actor {
 
     private Texture textureHeroAttack;
     private Sprite spriteHero;
-    private ActorEnemy actorEnemy;
+    private ActorEnemy enemy;
 
     private final float STEP = 5f;
     private static final int FRAME_COLS = 3; // #1
@@ -75,6 +75,10 @@ public class ActorHero extends Actor {
 
     public void setMainGameScreenStop(boolean mainGameScreenStop) {
         MainGameScreenStop = mainGameScreenStop;
+    }
+
+    public int getLives() {
+        return lives;
     }
 
     public int getHP() {
@@ -271,8 +275,9 @@ public class ActorHero extends Actor {
         this.needJump = needJump;
     }
 
-
-
+    public void setEnemy(ActorEnemy enemy) {
+        this.enemy = enemy;
+    }
 
     public ActorHero(Texture textureHero) {
         this.textureHero = textureHero;
@@ -280,7 +285,6 @@ public class ActorHero extends Actor {
         this.alive=true;
         spriteHero = new Sprite(textureRegionHero);
         setSize(spriteHero.getRegionWidth(), spriteHero.getRegionHeight());
-        actorEnemy = new ActorEnemy(this);
         hpBarTexture = new Texture("hpbar/hp8.png");
         hpBar = new HP(hpBarTexture);
     }
@@ -368,6 +372,13 @@ public class ActorHero extends Actor {
 
         textureRegionHero = new TextureRegion(currentFrame);
         spriteHero = new Sprite(textureRegionHero);
+        if(Math.abs(enemy.getX() - this.getX()) < 60 && Math.abs(enemy.getY() - this.getY()) <= 10) {
+            if (enemy.isAlive()) {
+                enemy.setHp(enemy.getHp() - 1);
+                enemy.setNeedDelayHp(true);
+                enemy.setDelayHpSeconds(0f);
+            }
+        }
     }
 
 
@@ -389,336 +400,350 @@ public class ActorHero extends Actor {
             needDelay02 = false;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R) && !needAttack2 && !needAttack3 && !needJump) {
-            if(firstPressedAttack) {
-                if (isHeroLookRight) {
-                    textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
-                }else{
-                    textureHeroAttack = new Texture("characters/attackingLeft.png");
-                }
-                isHeroAttack(textureHeroAttack);
-                timeSeconds = 0f;
-                firstPressedAttack = false;
-                comboCount = 2;
-                needDelay05 = true;
-                delay05Seconds = 0f;
-                delay02Seconds = 0f;
-                needDelay02 = true;
-
-
-
-
-            }else{
-                if(timeSeconds < 0.7 && comboCount == 2) {
-                    comboCount = 3;
-                    needAttack2 = true;
-                }
-                else if(timeSeconds < 0.7 && comboCount == 3) {
-                    comboCount = 1;
-                    needAttack3 = true;
-                    needDelay05 = true;
-                    delay05Seconds = 0f;
-                }
-                else if(!needDelay05 || needDelay05 && delay05Seconds > 0.5){
+        if(alive) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.R) && !needAttack2 && !needAttack3 && !needJump) {
+                if (firstPressedAttack) {
                     if (isHeroLookRight) {
                         textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
-                    }else{
+                    } else {
                         textureHeroAttack = new Texture("characters/attackingLeft.png");
                     }
-                    comboCount = 2;
                     isHeroAttack(textureHeroAttack);
-                    needDelay05 = false;
+                    timeSeconds = 0f;
+                    firstPressedAttack = false;
+                    comboCount = 2;
+                    needDelay05 = true;
+                    delay05Seconds = 0f;
+                    delay02Seconds = 0f;
+                    needDelay02 = true;
+
+                } else {
+                    if (timeSeconds < 0.7 && comboCount == 2) {
+                        comboCount = 3;
+                        needAttack2 = true;
+                    } else if (timeSeconds < 0.7 && comboCount == 3) {
+                        comboCount = 1;
+                        needAttack3 = true;
+                        needDelay05 = true;
+                        delay05Seconds = 0f;
+                    } else if (!needDelay05 || needDelay05 && delay05Seconds > 0.5) {
+                        if (isHeroLookRight) {
+                            textureHeroAttack = new Texture("characters/attackingRight.png"); // #9
+                        } else {
+                            textureHeroAttack = new Texture("characters/attackingLeft.png");
+                        }
+                        comboCount = 2;
+                        isHeroAttack(textureHeroAttack);
+                        needDelay05 = false;
+                        delay02Seconds = 0f;
+                        needDelay02 = true;
+                    }
+                    timeSeconds = 0f;
+                }
+
+
+            }
+
+            if (needAttack2) {
+                boolean damaged2 = false;
+                if (xCountAttack2n3 < 7) {
+                    if (isHeroLookRight) {
+                        textureHero = new Texture("characters/strangeRight1.png");
+                        textureRegionHero = new TextureRegion(textureHero);
+                        spriteHero = new Sprite(textureRegionHero);
+                        spriteHero.setPosition(spriteHero.getX() + ATTACK2N3_STEP, spriteHero.getY());
+                        this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
+                    } else {
+                        textureHero = new Texture("characters/strangeLeft1.png");
+                        textureRegionHero = new TextureRegion(textureHero);
+                        spriteHero = new Sprite(textureRegionHero);
+                        spriteHero.setPosition(spriteHero.getX() - ATTACK2N3_STEP, spriteHero.getY());
+                        this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                    }
+                    xCountAttack2n3++;
+                }
+                if (xCountAttack2n3 == 7) {
+                    needAttack2 = false;
+                    xCountAttack2n3 = 0;
                     delay02Seconds = 0f;
                     needDelay02 = true;
                 }
-                timeSeconds = 0f;
-            }
-        }
 
-        if(needAttack2) {
-            if (xCountAttack2n3 < 7) {
-                if (isHeroLookRight) {
-                    textureHero = new Texture("characters/strangeRight1.png");
-                    textureRegionHero = new TextureRegion(textureHero);
-                    spriteHero = new Sprite(textureRegionHero);
-                    spriteHero.setPosition(spriteHero.getX() + ATTACK2N3_STEP, spriteHero.getY());
-                    this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
-                } else {
-                    textureHero = new Texture("characters/strangeLeft1.png");
-                    textureRegionHero = new TextureRegion(textureHero);
-                    spriteHero = new Sprite(textureRegionHero);
-                    spriteHero.setPosition(spriteHero.getX() - ATTACK2N3_STEP, spriteHero.getY());
-                    this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                if (Math.abs(enemy.getX() - this.getX()) <= 21 && Math.abs(enemy.getY() - this.getY()) <= 10) {
+                    if (enemy.isAlive()) {
+                        enemy.setHp(enemy.getHp() - 1);
+                        enemy.setNeedDelayHp(true);
+                        enemy.setDelayHpSeconds(0f);
+                    }
                 }
-                xCountAttack2n3++;
             }
-            if (xCountAttack2n3 == 7) {
-                needAttack2 = false;
-                xCountAttack2n3 = 0;
-                delay02Seconds = 0f;
-                needDelay02 = true;
+            if (needAttack3) {
+                boolean isLooking = isHeroLookRight;
+                if (xCountAttack2n3 < 7) {
+                    if (isHeroLookLeft) {
+                        textureHero = new Texture("characters/strangeRight1.png");
+                        textureRegionHero = new TextureRegion(textureHero);
+                        spriteHero = new Sprite(textureRegionHero);
+                        spriteHero.setPosition(spriteHero.getX() + ATTACK2N3_STEP, spriteHero.getY());
+                        this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
+
+                    } else {
+                        textureHero = new Texture("characters/strangeLeft1.png");
+                        textureRegionHero = new TextureRegion(textureHero);
+                        spriteHero = new Sprite(textureRegionHero);
+                        spriteHero.setPosition(spriteHero.getX() - ATTACK2N3_STEP, spriteHero.getY());
+                        this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                    }
+                    xCountAttack2n3++;
+                }
+                if (xCountAttack2n3 == 7) {
+                    needAttack3 = false;
+                    xCountAttack2n3 = 0;
+                    isHeroLookRight = isLooking;
+                    isHeroLookLeft = !isLooking;
+                    delay02Seconds = 0f;
+                    needDelay02 = true;
+                }
+                if (Math.abs(enemy.getX() - this.getX()) <= 21 && Math.abs(enemy.getY() - this.getY()) <= 10) {
+                    if (enemy.isAlive()) {
+                        enemy.setHp(enemy.getHp() - 1);
+                        enemy.setNeedDelayHp(true);
+                        enemy.setDelayHpSeconds(0f);
+                    }
+                }
             }
-        }
-        if(needAttack3) {
-            boolean isLooking = isHeroLookRight;
-            if (xCountAttack2n3 < 7) {
+
+
+            if (needJump) {
+                if (yCountJump == 0 && jumpUp) {
+                    if (isHeroLookRight) {
+                        textureHero = new Texture("characters/jumpingRight.png");
+                    } else {
+                        textureHero = new Texture("characters/jumpingLeft.png");
+                    }
+                    textureRegionHero = new TextureRegion(textureHero);
+                    spriteHero = new Sprite(textureRegionHero);
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_1());
+                    this.setPosition(this.getX(), this.getY() + getJUMP_STEP_1());
+                    yCountJump++;
+                }
+
+
+                if (yCountJump > 0 && yCountJump < 25 && jumpUp) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_1());
+                    this.setPosition(this.getX(), this.getY() + getJUMP_STEP_1());
+                    yCountJump++;
+                }
+                if (yCountJump >= 25 && yCountJump < 40 && jumpUp) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_2());
+                    this.setPosition(this.getX(), this.getY() + getJUMP_STEP_2());
+                    yCountJump++;
+                }
+                if (yCountJump >= 40 && yCountJump < 53 && jumpUp) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_3());
+                    this.setPosition(this.getX(), this.getY() + getJUMP_STEP_3());
+                    yCountJump++;
+                }
+                if (yCountJump >= 53 && yCountJump < 60 && jumpUp) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_4());
+                    this.setPosition(this.getX(), this.getY() + getJUMP_STEP_4());
+                    yCountJump++;
+                }
+
+
+                if (yCountJump == 60 && jumpUp) {
+                    jumpUp = false;
+                    jumpDown = true;
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_4());
+                    this.setPosition(this.getX(), this.getY() - getJUMP_STEP_4());
+                    yCountJump--;
+                }
+
+
+                if (yCountJump >= 53 && yCountJump < 61 && jumpDown) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_4());
+                    this.setPosition(this.getX(), this.getY() - getJUMP_STEP_4());
+                    yCountJump--;
+                }
+                if (yCountJump >= 40 && yCountJump < 53 && jumpDown) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_3());
+                    this.setPosition(this.getX(), this.getY() - getJUMP_STEP_3());
+                    yCountJump--;
+                }
+                if (yCountJump >= 25 && yCountJump < 40 && jumpDown) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_2());
+                    this.setPosition(this.getX(), this.getY() - getJUMP_STEP_2());
+                    yCountJump--;
+                }
+                if (yCountJump > 0 && yCountJump < 25 && jumpDown) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_1());
+                    this.setPosition(this.getX(), this.getY() - getJUMP_STEP_1());
+                    yCountJump--;
+                }
+
+
+                if (yCountJump == 0 && jumpDown) {
+                    spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - 4.3f);
+                    this.setPosition(this.getX(), this.getY() - 4.3f);
+                    needJump = false;
+                    jumpUp = true;
+                    jumpDown = false;
+                }
+            }
+
+            if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.UP) && !needDelay02 && !Gdx.input.isKeyPressed(Input.Keys.DOWN) && !needJump && !isMainGameScreenStop() && !needAttack3 && !needAttack2) {
                 if (isHeroLookLeft) {
-                    textureHero = new Texture("characters/strangeRight1.png");
-                    textureRegionHero = new TextureRegion(textureHero);
-                    spriteHero = new Sprite(textureRegionHero);
-                    spriteHero.setPosition(spriteHero.getX() + ATTACK2N3_STEP, spriteHero.getY());
-                    this.setPosition(this.getX() + ATTACK2N3_STEP, this.getY());
-
+                    textureHero = new Texture("characters/standingLeft.png");
                 } else {
-                    textureHero = new Texture("characters/strangeLeft1.png");
-                    textureRegionHero = new TextureRegion(textureHero);
-                    spriteHero = new Sprite(textureRegionHero);
-                    spriteHero.setPosition(spriteHero.getX() - ATTACK2N3_STEP, spriteHero.getY());
-                    this.setPosition(this.getX() - ATTACK2N3_STEP, this.getY());
+                    textureHero = new Texture("characters/standingRight.png");
                 }
-                xCountAttack2n3++;
+                textureRegionHero = new TextureRegion(textureHero);
+                spriteHero = new Sprite(textureRegionHero);
             }
-            if (xCountAttack2n3 == 7) {
-                needAttack3 = false;
-                xCountAttack2n3 = 0;
-                isHeroLookRight = isLooking;
-                isHeroLookLeft = !isLooking;
-                delay02Seconds = 0f;
-                needDelay02 = true;
-            }
-        }
 
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 
+                if (!needJump) {
+                    walkSheet = new Texture("characters/runningLeft.png"); // #9
 
+                    isHeroRun(walkSheet);
 
-        if(needJump) {
-            if (yCountJump == 0 && jumpUp) {
-                if(isHeroLookRight) {
-                    textureHero = new Texture("characters/jumpingRight.png");
-                }else{
+                    spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
+                    this.setPosition(getX() - HERO_STEP - 3, getY());
+
+                    this.isHeroLookRight = false;
+                    this.isHeroLookLeft = true;
+                } else {
+                    spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
+                    this.setPosition(getX() - HERO_STEP - 3, getY());
+                    this.isHeroLookRight = false;
+                    this.isHeroLookLeft = true;
                     textureHero = new Texture("characters/jumpingLeft.png");
+                    textureRegionHero = new TextureRegion(textureHero);
+                    spriteHero = new Sprite(textureRegionHero);
                 }
-                textureRegionHero = new TextureRegion(textureHero);
-                spriteHero = new Sprite(textureRegionHero);
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_1());
-                this.setPosition(this.getX(), this.getY() + getJUMP_STEP_1());
-                yCountJump++;
+
+                comboCount = 1;
             }
 
-
-            if (yCountJump > 0 && yCountJump < 25 && jumpUp) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_1());
-                this.setPosition(this.getX(), this.getY() + getJUMP_STEP_1());
-                yCountJump++;
-            }
-            if (yCountJump >= 25 && yCountJump < 40 && jumpUp) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_2());
-                this.setPosition(this.getX(), this.getY() + getJUMP_STEP_2());
-                yCountJump++;
-            }
-            if (yCountJump >= 40 && yCountJump < 53 && jumpUp) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_3());
-                this.setPosition(this.getX(), this.getY() + getJUMP_STEP_3());
-                yCountJump++;
-            }
-            if (yCountJump >= 53 && yCountJump < 60 && jumpUp) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() + getJUMP_STEP_4());
-                this.setPosition(this.getX(), this.getY() + getJUMP_STEP_4());
-                yCountJump++;
-            }
-
-
-            if (yCountJump == 60 && jumpUp) {
-                jumpUp = false;
-                jumpDown = true;
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_4());
-                this.setPosition(this.getX(), this.getY() - getJUMP_STEP_4());
-                yCountJump--;
-            }
-
-
-            if (yCountJump >= 53 && yCountJump < 61 && jumpDown) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_4());
-                this.setPosition(this.getX(), this.getY() - getJUMP_STEP_4());
-                yCountJump--;
-            }
-            if (yCountJump >= 40 && yCountJump < 53 && jumpDown) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_3());
-                this.setPosition(this.getX(), this.getY() - getJUMP_STEP_3());
-                yCountJump--;
-            }
-            if (yCountJump >= 25 && yCountJump < 40 && jumpDown) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_2());
-                this.setPosition(this.getX(), this.getY() - getJUMP_STEP_2());
-                yCountJump--;
-            }
-            if (yCountJump > 0 && yCountJump < 25 && jumpDown) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - getJUMP_STEP_1());
-                this.setPosition(this.getX(), this.getY() - getJUMP_STEP_1());
-                yCountJump--;
-            }
-
-
-            if (yCountJump == 0 && jumpDown) {
-                spriteHero.setPosition(spriteHero.getX(), spriteHero.getY() - 4.3f);
-                this.setPosition(this.getX(), this.getY() - 4.3f);
-                needJump = false;
-                jumpUp = true;
-                jumpDown = false;
-            }
-        }
-
-        if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.UP) && !needDelay02 && !Gdx.input.isKeyPressed(Input.Keys.DOWN) && !needJump && !isMainGameScreenStop() && !needAttack3 && !needAttack2) {
-            if(isHeroLookLeft) {
-                textureHero = new Texture("characters/standingLeft.png");
-            }else{
-                textureHero = new Texture("characters/standingRight.png");
-            }
-            textureRegionHero = new TextureRegion(textureHero);
-            spriteHero = new Sprite(textureRegionHero);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-
-            if (!needJump) {
-                walkSheet = new Texture("characters/runningLeft.png"); // #9
-
-                isHeroRun(walkSheet);
-
-                spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
-                this.setPosition(getX() - HERO_STEP - 3, getY());
-
-                this.isHeroLookRight = false;
-                this.isHeroLookLeft = true;
-            } else {
-                spriteHero.setPosition(getX() - HERO_STEP - 3, getY());
-                this.setPosition(getX() - HERO_STEP - 3, getY());
-                this.isHeroLookRight = false;
-                this.isHeroLookLeft = true;
-                textureHero = new Texture("characters/jumpingLeft.png");
-                textureRegionHero = new TextureRegion(textureHero);
-                spriteHero = new Sprite(textureRegionHero);
-            }
-
-            comboCount = 1;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            if (!needJump) {
-                walkSheet = new Texture("characters/runningRight.png"); // #9
-
-                isHeroRun(walkSheet);
-
-                spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
-                this.setPosition(getX() + HERO_STEP + 3, getY());
-
-                this.isHeroLookRight = true;
-                this.isHeroLookLeft = false;
-            } else {
-                spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
-                this.setPosition(getX() + HERO_STEP + 3, getY());
-
-                this.isHeroLookRight = true;
-                this.isHeroLookLeft = false;
-
-                textureHero = new Texture("characters/jumpingRight.png");
-                textureRegionHero = new TextureRegion(textureHero);
-                spriteHero = new Sprite(textureRegionHero);
-            }
-            isRight = true;
-            comboCount = 1;
-        }
-
-        if(!Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            isRight = false;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            if (!needJump) {
-                if (firstPressed) {
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                if (!needJump) {
                     walkSheet = new Texture("characters/runningRight.png"); // #9
 
                     isHeroRun(walkSheet);
 
-                    spriteHero.setPosition(getX(), getY() - HERO_STEP);
-                    this.setPosition(getX(), getY() - HERO_STEP);
-                    this.firstPressed = false;
-                    this.isHeroLookLeft = false;
-                    this.isHeroLookRight = true;
-                } else {
-                    isHeroRun();
+                    spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
+                    this.setPosition(getX() + HERO_STEP + 3, getY());
 
+                    this.isHeroLookRight = true;
+                    this.isHeroLookLeft = false;
+                } else {
+                    spriteHero.setPosition(getX() + HERO_STEP + 3, getY());
+                    this.setPosition(getX() + HERO_STEP + 3, getY());
+
+                    this.isHeroLookRight = true;
+                    this.isHeroLookLeft = false;
+
+                    textureHero = new Texture("characters/jumpingRight.png");
+                    textureRegionHero = new TextureRegion(textureHero);
+                    spriteHero = new Sprite(textureRegionHero);
+                }
+                isRight = true;
+                comboCount = 1;
+            }
+
+            if (!Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                isRight = false;
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                if (!needJump) {
+                    if (firstPressed) {
+                        walkSheet = new Texture("characters/runningRight.png"); // #9
+
+                        isHeroRun(walkSheet);
+
+                        spriteHero.setPosition(getX(), getY() - HERO_STEP);
+                        this.setPosition(getX(), getY() - HERO_STEP);
+                        this.firstPressed = false;
+                        this.isHeroLookLeft = false;
+                        this.isHeroLookRight = true;
+                    } else {
+                        isHeroRun();
+
+                        spriteHero.setPosition(getX(), getY() - HERO_STEP);
+                        this.setPosition(getX(), getY() - HERO_STEP);
+                    }
+                } else {
                     spriteHero.setPosition(getX(), getY() - HERO_STEP);
                     this.setPosition(getX(), getY() - HERO_STEP);
                 }
-            } else {
-                spriteHero.setPosition(getX(), getY() - HERO_STEP);
-                this.setPosition(getX(), getY() - HERO_STEP);
+
+                comboCount = 1;
             }
 
-            comboCount = 1;
-        }
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                if (!needJump) {
+                    if (firstPressed) {
+                        walkSheet = new Texture("characters/runningRight.png"); // #9
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                        isHeroRun(walkSheet);
+
+                        spriteHero.setPosition(getX(), getY() + HERO_STEP);
+                        this.setPosition(getX(), getY() + HERO_STEP);
+
+                        this.firstPressed = false;
+                        this.isHeroLookLeft = false;
+                        this.isHeroLookRight = true;
+
+                    } else {
+                        isHeroRun();
+
+                        spriteHero.setPosition(getX(), getY() + HERO_STEP);
+                        this.setPosition(getX(), getY() + HERO_STEP);
+                    }
+                } else {
+                    spriteHero.setPosition(getX(), getY() + HERO_STEP);
+                    this.setPosition(getX(), getY() + HERO_STEP);
+                }
+
+                comboCount = 1;
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                needJump = true;
+                comboCount = 1;
+            }
+
+
+            if (hp <= 0 && lives == 2) {
+                hp = 8;
+                lives = 1;
+            }
+
+            float W = Gdx.graphics.getWidth();
+            float H = Gdx.graphics.getHeight();
+
+
+            if (this.getY() <= -10) {
+                this.setPosition(this.getX(), -10);
+                spriteHero.setPosition(spriteHero.getX(), -10);
+            }
             if (!needJump) {
-                if (firstPressed) {
-                    walkSheet = new Texture("characters/runningRight.png"); // #9
-
-                    isHeroRun(walkSheet);
-
-                    spriteHero.setPosition(getX(), getY() + HERO_STEP);
-                    this.setPosition(getX(), getY() + HERO_STEP);
-
-                    this.firstPressed = false;
-                    this.isHeroLookLeft = false;
-                    this.isHeroLookRight = true;
-
-                } else {
-                    isHeroRun();
-
-                    spriteHero.setPosition(getX(), getY() + HERO_STEP);
-                    this.setPosition(getX(), getY() + HERO_STEP);
+                if (this.getY() >= H / 3) {
+                    this.setPosition(this.getX(), H / 3);
+                    spriteHero.setPosition(spriteHero.getX(), H / 3);
                 }
-            } else {
-                spriteHero.setPosition(getX(), getY() + HERO_STEP);
-                this.setPosition(getX(), getY() + HERO_STEP);
             }
-
-            comboCount = 1;
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            needJump = true;
-            comboCount = 1;
-        }
-
-
-        float W = Gdx.graphics.getWidth();
-        float H = Gdx.graphics.getHeight();
-
-
-
-
-        if(this.getY() <= -10){
-            this.setPosition(this.getX(), -10);
-            spriteHero.setPosition(spriteHero.getX(), -10);
-        }
-        if(!needJump) {
-            if (this.getY() >= H / 3) {
-                this.setPosition(this.getX(), H / 3);
-                spriteHero.setPosition(spriteHero.getX(), H / 3);
+            if (this.getX() >= W - W / 7) {
+                this.setPosition(W - W / 7, this.getY());
+                spriteHero.setPosition(W - W / 7, this.getY());
+            }
+            if (this.getX() <= -10) {
+                this.setPosition(-10, this.getY());
+                spriteHero.setPosition(-10, this.getY());
             }
         }
-        if(this.getX() >= W - W / 7){
-            this.setPosition(W - W / 7, this.getY());
-            spriteHero.setPosition(W - W / 7, this.getY());
-        }
-        if(this.getX() <= -10){
-            this.setPosition(-10, this.getY());
-            spriteHero.setPosition(-10, this.getY());
-        }
-
-
 
 
     }
