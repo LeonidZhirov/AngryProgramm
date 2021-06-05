@@ -28,18 +28,19 @@ import javax.xml.soap.Text;
 
 public class MainGameScreen extends BaseScreen implements ApplicationListener
 {
-
+    private Texture background;
+    private int a;
 
     public MainGameScreen(MainGame game)
     {
         super(game);
         batch = new SpriteBatch();
         background = new Texture("Background.png");
+        a = 8;
 
         textureHero = new Texture("characters/standingLeft.png");
         spriteHero = new Sprite(textureHero);
         hpBarTexture = new Texture("hpbar/hp8.png");
-        heart = new Image(new Texture("heart.png"));
         isUp=false;
         isDown=false;
         isRight = false;
@@ -72,31 +73,17 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
     private Shadow shadowHero;
     private HP hpBar;
     private Texture hpBarTexture;
-    private Texture background;
 
-    private Image heart;
+    public Boolean isUp;
+    public Boolean isDown;
+    public Boolean isRight;
+    public Boolean isLeft;
+    public Boolean isLeftUp;
+    public Boolean isLeftDown;
+    public Boolean isRightUp;
+    public Boolean isRightDown;
 
-    private Boolean isUp;
-    private Boolean isDown;
-    private Boolean isRight;
-    private Boolean isLeft;
-    private Boolean isLeftUp;
-    private Boolean isLeftDown;
-    private Boolean isRightUp;
-    private Boolean isRightDown;
 
-    private boolean gameover = false;
-
-    private boolean needDelay5 = false;
-    private boolean needDelayGameover = false;
-
-    public boolean isGameover() {
-        return gameover;
-    }
-
-    public void setGameover(boolean gameover) {
-        this.gameover = gameover;
-    }
 
     @Override
     public void show() {
@@ -113,15 +100,21 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         actorEnemy.setPosition(100,100);
         actorEnemy.setShadow(shadowHero);
 
+<<<<<<< HEAD
         actorHero.setEnemy(actorEnemy);
 
 
+=======
+>>>>>>> parent of 9bd638e (done)
         stage.addActor(actorEnemy);
 
         hpBar = new HP(hpBarTexture);
         hpBar.setPosition(W - 850, H - 200);
 
+<<<<<<< HEAD
         heart.setPosition(hpBar.getX() - 140, hpBar.getY() - 48);
+=======
+>>>>>>> parent of 9bd638e (done)
         stage.addActor(hpBar);
 
 //        move = new MoveToAction();
@@ -158,7 +151,8 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         stage.addActor(arrow_ld_btn);
         stage.addActor(jump_btn);
         stage.addActor(attack_btn);
-        stage.addActor(heart);
+
+
         jump_btn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent e, float x, float y){
@@ -335,16 +329,12 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
     }
 
-    private float delay5Seconds = 0f;
-    private float delayGameoverSeconds = 0f;
-    private boolean delay5SecondsNulled = false;
-    private boolean delayGameoverSecondsNulled = false;
-
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+<<<<<<< HEAD
         delay5Seconds += Gdx.graphics.getDeltaTime();
         delayGameoverSeconds += Gdx.graphics.getDeltaTime();
 
@@ -380,6 +370,8 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
         if(actorHero.getLives() == 1){
             heart.remove();
         }
+=======
+>>>>>>> parent of 9bd638e (done)
 
         if(isUp)
         {
@@ -555,11 +547,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
             }
         }
 
-        if(actorHero.getHP() < 0) {
-            hpBar.setHpBarTexture(new Texture("hpbar/hp0.png"));
-        }else {
-            hpBar.setHpBarTexture(new Texture("hpbar/hp" + actorHero.getHP() + ".png"));
-        }
+        hpBar.setHpBarTexture(new Texture("hpbar/hp" + actorHero.getHP() + ".png"));
         hpBar.setHpBarTextureRegion(new TextureRegion(hpBar.getHpBarTexture()));
         hpBar.setHpBarSprite(new Sprite(hpBar.getHpBarTextureRegion()));
 

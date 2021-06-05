@@ -6,29 +6,15 @@ import com.badlogic.gdx.audio.Music;
 
 public class MainGame extends Game {
 
-    public MainGameScreen gameScreen;
-    public GameOverScreen gameOverScreen;
-    public MenuScreen menuScreen;
-
     @Override
     public void create ()
     {
-        menuScreen = new MenuScreen(this);
-        gameScreen = new MainGameScreen(this);
-        gameOverScreen = new GameOverScreen(this);
-        setScreen(menuScreen);
+        setScreen(new MainGameScreen(this));
         Music music = Gdx.audio.newMusic(Gdx.files.internal("torero.mp3"));
         music.setVolume(0.3f);
         music.setLooping(true);
-        music.play();
+        //music.play();
     }
 
-    @Override
-    public void render() {
-        super.render();
-        if(gameScreen.isGameover()){
-            setScreen(gameOverScreen);
-            gameScreen.setGameover(false);
-        }
-    }
 }
+//ABOBA
