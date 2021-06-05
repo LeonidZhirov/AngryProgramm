@@ -21,6 +21,8 @@ public class ActorEnemy extends Actor
     private final float STEP = 2f;
     private int damage = 1;
 
+    private Shadow shadow;
+
     private int hp = 7;
 
     private Texture walkSheet;
@@ -59,6 +61,10 @@ public class ActorEnemy extends Actor
     private int comboCount = 1;
     private int xCountAttack2n3 = 0;
     private float ATTACK2N3_STEP = 20f;
+
+    public void setShadow(Shadow shadow) {
+        this.shadow = shadow;
+    }
 
     public void setDamage(int damage) {
         this.damage = damage;
@@ -239,7 +245,7 @@ public class ActorEnemy extends Actor
             } else {
                 canAttackX = true;
             }
-            if (Math.abs(this.getY() - actorHero.getY()) > 10) {
+            if (Math.abs(this.getY() - shadow.getY()) > 10) {
                 canAttackY = false;
                 if (this.getY() < actorHero.getY()) {
                     if (firstPressed) {
@@ -263,7 +269,7 @@ public class ActorEnemy extends Actor
                         spriteEnemy.setPosition(this.getX(), this.getY() + STEP / 2);
                     }
                 }
-                if (this.getY() > actorHero.getY()) {
+                if (this.getY() > shadow.getY()) {
                     if (firstPressed) {
                         walkSheet = new Texture("characters/runningRight.png"); // #9
 
@@ -292,7 +298,7 @@ public class ActorEnemy extends Actor
                 needDelay02 = false;
             }
 
-            if (canAttackX && canAttackY) {
+            if (canAttackX && canAttackY && !actorHero.isNeedJump()) {
                 isRunning = false;
                 if (needAttack2or3 && comboCount != 1) {
                     if (delaySeconds4 >= 2 && comboCount == 2) {

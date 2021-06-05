@@ -111,8 +111,10 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
 
         actorEnemy = new ActorEnemy(actorHero);
         actorEnemy.setPosition(100,100);
+        actorEnemy.setShadow(shadowHero);
 
         actorHero.setEnemy(actorEnemy);
+
 
         stage.addActor(actorEnemy);
 
@@ -353,7 +355,7 @@ public class MainGameScreen extends BaseScreen implements ApplicationListener
             }
             needDelayGameover = true;
         }
-        if(needDelayGameover && delayGameoverSeconds > 5f){
+        if(needDelayGameover && delayGameoverSeconds > 2.5f){
             gameover = true;
         }
 
